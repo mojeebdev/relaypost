@@ -288,9 +288,62 @@ function DashboardPage() {
               transition: "opacity 120ms",
             }}
           >
-            {isGenerating ? (<><PulseSpinner />GENERATING…</>) : "GENERATE VERSIONS →"}
+            {isGenerating ? (<><PulseSpinner />{LOADING_STAGES[stageIdx]}</>) : "GENERATE VERSIONS →"}
           </button>
         </form>
+
+        {generateMutation.isError && (
+          <div
+            role="alert"
+            style={{
+              marginTop: 20,
+              background: "rgba(255,80,80,0.06)",
+              border: "1px solid rgba(255,80,80,0.3)",
+              borderRadius: 8,
+              padding: 18,
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "space-between",
+              gap: 16,
+              flexWrap: "wrap",
+            }}
+          >
+            <div>
+              <p style={{ ...labelStyle, color: "#ff8080", marginBottom: 6 }}>// TRANSMISSION FAILED</p>
+              <p style={{
+                fontFamily: "var(--font-accent)",
+                fontSize: 13,
+                color: "var(--ink-secondary)",
+                margin: 0,
+              }}>
+                {generateMutation.error instanceof Error
+                  ? generateMutation.error.message
+                  : "Something went wrong."}
+              </p>
+            </div>
+            <button
+              onClick={() => generateMutation.reset()}
+              style={{
+                background: "transparent",
+                color: "#ff8080",
+                border: "1px solid rgba(255,80,80,0.4)",
+                fontFamily: "var(--font-accent)",
+                fontSize: 11,
+                letterSpacing: "0.12em",
+                textTransform: "uppercase",
+                padding: "10px 16px",
+                borderRadius: 6,
+                cursor: "pointer",
+              }}
+            >
+              RETRY
+            </button>
+          </div>
+        )}
+
+        {!activePost && !historyQuery.isLoading && (historyQuery.data?.posts?.length ?? 0) === 0 && (
+          <EmptyState />
+        )}
 
         {activePost && (
           <div id="approval-queue" className="mt-12">
