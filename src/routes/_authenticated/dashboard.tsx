@@ -1,11 +1,14 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useState, type CSSProperties } from "react";
+import { useEffect, useState, type CSSProperties } from "react";
 import { useServerFn } from "@tanstack/react-start";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { generateVersions, listPosts, getPost } from "@/lib/relay.functions";
 import { supabase } from "@/integrations/supabase/client";
 import { generateLinkedInPdf } from "@/lib/linkedin-pdf";
+import { track } from "@/lib/analytics";
+
+const LOADING_STAGES = ["ANALYZING POST...", "REFORMATTING...", "READY TO APPROVE"] as const;
 
 /** Strip [SLIDE N] labels to make a LinkedIn caption suitable to paste alongside the PDF. */
 function linkedinCaption(text: string): string {
