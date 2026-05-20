@@ -112,6 +112,7 @@ function DashboardPage() {
 
   const [xPost, setXPost] = useState("");
   const [activePost, setActivePost] = useState<Post | null>(null);
+  const [stageIdx, setStageIdx] = useState(0);
 
   const historyQuery = useQuery({
     queryKey: ["posts"],
@@ -125,12 +126,25 @@ function DashboardPage() {
       setXPost("");
       queryClient.invalidateQueries({ queryKey: ["posts"] });
       toast.success("Three versions ready. Approve what ships.");
+      track({ name: "post_generated" });
       requestAnimationFrame(() => {
         document.getElementById("approval-queue")?.scrollIntoView({ behavior: "smooth", block: "start" });
       });
     },
     onError: (err) => toast.error(err instanceof Error ? err.message : "Generation failed"),
   });
+
+  // Sequence loading labels: ANALYZING → REFORMATTING → READY (every 800ms)
+  useEffect(() => {
+    if (!generateMutation.isPending) {
+      setStageIdx(0);
+      return;
+    }
+    setStageIdx(0);
+    const t1 = setTimeout(() => setStageIdx(1), 800);
+    const t2 = setTimeout(() => setStageIdx(2), 1600);
+    return () => { clearTimeout(t1); clearTimeout(t2); };
+  }, [generateMutation.isPending]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -145,19 +159,23 @@ function DashboardPage() {
     if (error) { toast.error(error.message); return; }
     setActivePost({ ...activePost, [`${platform}_status`]: status } as Post);
     queryClient.invalidateQueries({ queryKey: ["posts"] });
+    if (status === "approved") track({ name: "platform_approved", platform });
+    if (status === "skipped") track({ name: "platform_skipped", platform });
   };
 
   const publishAllApproved = async () => {
     if (!activePost) return;
     const patch: Record<string, unknown> = { published_at: new Date().toISOString() };
+    let count = 0;
     for (const p of PLATFORMS) {
-      if (activePost[`${p.key}_status`] === "approved") patch[`${p.key}_status`] = "published";
+      if (activePost[`${p.key}_status`] === "approved") { patch[`${p.key}_status`] = "published"; count++; }
     }
     const { error } = await supabase.from("posts").update(patch as never).eq("id", activePost.id);
     if (error) { toast.error(error.message); return; }
     toast.success("Approved versions marked as published.");
     setActivePost({ ...activePost, ...patch } as Post);
     queryClient.invalidateQueries({ queryKey: ["posts"] });
+    track({ name: "post_published", count });
   };
 
   const viewPost = async (id: string) => {
