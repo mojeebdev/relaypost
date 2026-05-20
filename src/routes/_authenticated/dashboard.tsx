@@ -569,4 +569,80 @@ function HistorySection({ posts, loading, onView }: { posts: Post[]; loading: bo
   );
 }
 
+function ExportActions({ platform, content }: { platform: Platform; content: string }) {
+  const btnPrimary: CSSProperties = {
+    flex: 1,
+    background: "var(--accent)",
+    color: "#000",
+    border: "none",
+    fontFamily: "var(--font-display)",
+    fontWeight: 500,
+    fontSize: 11,
+    letterSpacing: "0.1em",
+    padding: "10px",
+    borderRadius: 6,
+    cursor: "pointer",
+  };
+  const btnGhost: CSSProperties = {
+    flex: 1,
+    background: "transparent",
+    color: "var(--ink-secondary)",
+    border: "1px solid var(--void-05)",
+    fontFamily: "var(--font-accent)",
+    fontSize: 10,
+    letterSpacing: "0.12em",
+    textTransform: "uppercase",
+    padding: "10px",
+    borderRadius: 6,
+    cursor: "pointer",
+  };
+
+  if (platform === "linkedin") {
+    const caption = linkedinCaption(content);
+    return (
+      <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+        <button
+          style={btnPrimary}
+          onClick={() => {
+            generateLinkedInPdf(content);
+            toast.success("PDF downloaded. Upload to LinkedIn as a document post.");
+          }}
+        >
+          ↓ DOWNLOAD PDF
+        </button>
+        <button
+          style={btnGhost}
+          onClick={() => copyToClipboard(caption, "Caption copied — paste alongside your PDF upload.")}
+        >
+          COPY POST CAPTION
+        </button>
+      </div>
+    );
+  }
+
+  if (platform === "medium") {
+    return (
+      <button
+        style={btnPrimary}
+        title="Paste this into Medium's editor — formatting is preserved"
+        onClick={() => copyToClipboard(content, "Markdown copied — paste directly into Medium editor.")}
+      >
+        COPY MARKDOWN
+      </button>
+    );
+  }
+
+  // Facebook
+  return (
+    <button
+      style={btnPrimary}
+      title="Paste this into Facebook — the formatting is optimized for FB's algorithm"
+      onClick={() => copyToClipboard(content, "Post copied — paste into Facebook.")}
+    >
+      COPY POST
+    </button>
+  );
+}
+
+
 
