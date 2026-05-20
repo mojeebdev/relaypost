@@ -45,12 +45,12 @@ export function ReviewPanel({ post, onDone }: { post: GeneratedPost; onDone: () 
   const update = async (p: Platform, status: Status) => {
     setBusy(p);
     try {
-      const patch: Record<string, unknown> = {
+      const patch = {
         [`${p}_status`]: status,
         [`${p}_version`]: drafts[p],
+        ...(status === "published" ? { published_at: new Date().toISOString() } : {}),
       };
-      if (status === "published") patch.published_at = new Date().toISOString();
-      const { error } = await supabase.from("posts").update(patch).eq("id", post.id);
+      const { error } = await supabase.from("posts").update(patch as never).eq("id", post.id);
       if (error) throw error;
       setStatuses((s) => ({ ...s, [p]: status }));
       if (status === "approved") toast.success(`${p} approved.`);
