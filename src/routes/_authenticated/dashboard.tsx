@@ -722,5 +722,92 @@ function ExportActions({ platform, content }: { platform: Platform; content: str
   );
 }
 
+function EmptyState() {
+  return (
+    <div
+      className="mt-16 mb-8 px-6 text-center"
+      style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 18 }}
+    >
+      <style>{`
+        @keyframes relay-line-pulse {
+          0%, 100% { opacity: 0.15; transform: scaleX(0.6); }
+          50%      { opacity: 0.9;  transform: scaleX(1); }
+        }
+      `}</style>
+      <h2
+        style={{
+          fontFamily: "var(--font-display)",
+          fontWeight: 500,
+          fontSize: "clamp(28px, 5vw, 44px)",
+          lineHeight: 1.1,
+          color: "var(--ink-primary)",
+          maxWidth: 640,
+          margin: 0,
+        }}
+      >
+        Your X posts deserve a wider audience.
+      </h2>
+      <p
+        style={{
+          fontFamily: "var(--font-body)",
+          fontWeight: 300,
+          fontSize: 16,
+          color: "var(--ink-secondary)",
+          maxWidth: 480,
+          margin: 0,
+        }}
+      >
+        Paste a post above — RELAY handles the rest.
+      </p>
+      <div
+        aria-hidden
+        style={{
+          width: 120,
+          height: 2,
+          background: "var(--accent)",
+          borderRadius: 2,
+          marginTop: 10,
+          transformOrigin: "center",
+          animation: "relay-line-pulse 2.4s ease-in-out infinite",
+        }}
+      />
+    </div>
+  );
+}
+
+function HistorySkeleton() {
+  const cellBase: CSSProperties = {
+    background: "var(--void-03)",
+    borderRadius: 4,
+    height: 12,
+    animation: "relay-pulse 1.4s ease-in-out infinite",
+  };
+  return (
+    <div style={{ padding: "8px 0" }}>
+      {[0, 1, 2, 3].map((i) => (
+        <div
+          key={i}
+          style={{
+            display: "grid",
+            gridTemplateColumns: "90px 1fr 90px 90px 90px 60px",
+            gap: 16,
+            padding: "16px 16px",
+            borderBottom: i === 3 ? "none" : "1px solid var(--void-04)",
+            alignItems: "center",
+          }}
+        >
+          <div style={{ ...cellBase, width: 70 }} />
+          <div style={{ ...cellBase, width: "85%" }} />
+          <div style={{ ...cellBase, width: 64, height: 18, borderRadius: 4 }} />
+          <div style={{ ...cellBase, width: 64, height: 18, borderRadius: 4 }} />
+          <div style={{ ...cellBase, width: 64, height: 18, borderRadius: 4 }} />
+          <div style={{ ...cellBase, width: 40, height: 18, borderRadius: 4 }} />
+        </div>
+      ))}
+    </div>
+  );
+}
+
+
 
 
