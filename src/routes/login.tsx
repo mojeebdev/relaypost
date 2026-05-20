@@ -6,7 +6,7 @@ import { toast } from "sonner";
 export const Route = createFileRoute("/login")({
   beforeLoad: async () => {
     const { data } = await supabase.auth.getUser();
-    if (data.user) throw redirect({ to: "/app" });
+    if (data.user) throw redirect({ to: "/dashboard" });
   },
   component: LoginPage,
 });
@@ -33,7 +33,7 @@ function LoginPage() {
       } else {
         const { error } = await supabase.auth.signInWithPassword({ email, password });
         if (error) throw error;
-        navigate({ to: "/app" });
+        navigate({ to: "/dashboard" });
       }
     } catch (err) {
       toast.error(err instanceof Error ? err.message : "Authentication failed");
