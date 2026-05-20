@@ -5,6 +5,24 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { generateVersions, listPosts, getPost } from "@/lib/relay.functions";
 import { supabase } from "@/integrations/supabase/client";
+import { generateLinkedInPdf } from "@/lib/linkedin-pdf";
+
+/** Strip [SLIDE N] labels to make a LinkedIn caption suitable to paste alongside the PDF. */
+function linkedinCaption(text: string): string {
+  return text
+    .replace(/\[SLIDE\s*\d+\][^\n]*\n?/gi, "")
+    .replace(/\n{3,}/g, "\n\n")
+    .trim();
+}
+
+async function copyToClipboard(text: string, successMsg: string) {
+  try {
+    await navigator.clipboard.writeText(text);
+    toast.success(successMsg);
+  } catch {
+    toast.error("Could not access clipboard");
+  }
+}
 
 export const Route = createFileRoute("/_authenticated/dashboard")({
   component: DashboardPage,
