@@ -64,6 +64,9 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { rel: "stylesheet", href: "https://api.fontshare.com/v2/css?f[]=array@300,400,500&display=swap" },
       { rel: "stylesheet", href: "https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;500&family=IBM+Plex+Mono:wght@300;400;500&display=swap" },
     ],
+    scripts: [
+      { src: "https://cdn.novus.ai/analytics.js", async: true, "data-app": "relay" },
+    ],
   }),
   shellComponent: RootShell,
   component: RootComponent,
