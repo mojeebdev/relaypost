@@ -679,6 +679,7 @@ function ExportActions({ platform, content }: { platform: Platform; content: str
           style={btnPrimary}
           onClick={() => {
             generateLinkedInPdf(content);
+            track({ name: "pdf_downloaded" });
             toast.success("PDF downloaded. Upload to LinkedIn as a document post.");
           }}
         >
