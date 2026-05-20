@@ -14,7 +14,48 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      posts: {
+        Row: {
+          created_at: string
+          facebook_status: Database["public"]["Enums"]["post_status"]
+          facebook_version: string | null
+          id: string
+          linkedin_status: Database["public"]["Enums"]["post_status"]
+          linkedin_version: string | null
+          medium_status: Database["public"]["Enums"]["post_status"]
+          medium_version: string | null
+          original_x_post: string
+          published_at: string | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          facebook_status?: Database["public"]["Enums"]["post_status"]
+          facebook_version?: string | null
+          id?: string
+          linkedin_status?: Database["public"]["Enums"]["post_status"]
+          linkedin_version?: string | null
+          medium_status?: Database["public"]["Enums"]["post_status"]
+          medium_version?: string | null
+          original_x_post: string
+          published_at?: string | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          facebook_status?: Database["public"]["Enums"]["post_status"]
+          facebook_version?: string | null
+          id?: string
+          linkedin_status?: Database["public"]["Enums"]["post_status"]
+          linkedin_version?: string | null
+          medium_status?: Database["public"]["Enums"]["post_status"]
+          medium_version?: string | null
+          original_x_post?: string
+          published_at?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
@@ -23,7 +64,7 @@ export type Database = {
       [_ in never]: never
     }
     Enums: {
-      [_ in never]: never
+      post_status: "pending" | "approved" | "published" | "skipped"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -150,6 +191,8 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      post_status: ["pending", "approved", "published", "skipped"],
+    },
   },
 } as const
