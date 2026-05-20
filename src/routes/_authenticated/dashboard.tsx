@@ -1,11 +1,14 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useState, type CSSProperties } from "react";
+import { useEffect, useState, type CSSProperties } from "react";
 import { useServerFn } from "@tanstack/react-start";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { generateVersions, listPosts, getPost } from "@/lib/relay.functions";
 import { supabase } from "@/integrations/supabase/client";
 import { generateLinkedInPdf } from "@/lib/linkedin-pdf";
+import { track } from "@/lib/analytics";
+
+const LOADING_STAGES = ["ANALYZING POST...", "REFORMATTING...", "READY TO APPROVE"] as const;
 
 /** Strip [SLIDE N] labels to make a LinkedIn caption suitable to paste alongside the PDF. */
 function linkedinCaption(text: string): string {
@@ -109,6 +112,7 @@ function DashboardPage() {
 
   const [xPost, setXPost] = useState("");
   const [activePost, setActivePost] = useState<Post | null>(null);
+  const [stageIdx, setStageIdx] = useState(0);
 
   const historyQuery = useQuery({
     queryKey: ["posts"],
@@ -122,12 +126,25 @@ function DashboardPage() {
       setXPost("");
       queryClient.invalidateQueries({ queryKey: ["posts"] });
       toast.success("Three versions ready. Approve what ships.");
+      track({ name: "post_generated" });
       requestAnimationFrame(() => {
         document.getElementById("approval-queue")?.scrollIntoView({ behavior: "smooth", block: "start" });
       });
     },
     onError: (err) => toast.error(err instanceof Error ? err.message : "Generation failed"),
   });
+
+  // Sequence loading labels: ANALYZING → REFORMATTING → READY (every 800ms)
+  useEffect(() => {
+    if (!generateMutation.isPending) {
+      setStageIdx(0);
+      return;
+    }
+    setStageIdx(0);
+    const t1 = setTimeout(() => setStageIdx(1), 800);
+    const t2 = setTimeout(() => setStageIdx(2), 1600);
+    return () => { clearTimeout(t1); clearTimeout(t2); };
+  }, [generateMutation.isPending]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -142,19 +159,23 @@ function DashboardPage() {
     if (error) { toast.error(error.message); return; }
     setActivePost({ ...activePost, [`${platform}_status`]: status } as Post);
     queryClient.invalidateQueries({ queryKey: ["posts"] });
+    if (status === "approved") track({ name: "platform_approved", platform });
+    if (status === "skipped") track({ name: "platform_skipped", platform });
   };
 
   const publishAllApproved = async () => {
     if (!activePost) return;
     const patch: Record<string, unknown> = { published_at: new Date().toISOString() };
+    let count = 0;
     for (const p of PLATFORMS) {
-      if (activePost[`${p.key}_status`] === "approved") patch[`${p.key}_status`] = "published";
+      if (activePost[`${p.key}_status`] === "approved") { patch[`${p.key}_status`] = "published"; count++; }
     }
     const { error } = await supabase.from("posts").update(patch as never).eq("id", activePost.id);
     if (error) { toast.error(error.message); return; }
     toast.success("Approved versions marked as published.");
     setActivePost({ ...activePost, ...patch } as Post);
     queryClient.invalidateQueries({ queryKey: ["posts"] });
+    track({ name: "post_published", count });
   };
 
   const viewPost = async (id: string) => {
@@ -267,9 +288,62 @@ function DashboardPage() {
               transition: "opacity 120ms",
             }}
           >
-            {isGenerating ? (<><PulseSpinner />GENERATING…</>) : "GENERATE VERSIONS →"}
+            {isGenerating ? (<><PulseSpinner />{LOADING_STAGES[stageIdx]}</>) : "GENERATE VERSIONS →"}
           </button>
         </form>
+
+        {generateMutation.isError && (
+          <div
+            role="alert"
+            style={{
+              marginTop: 20,
+              background: "rgba(255,80,80,0.06)",
+              border: "1px solid rgba(255,80,80,0.3)",
+              borderRadius: 8,
+              padding: 18,
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "space-between",
+              gap: 16,
+              flexWrap: "wrap",
+            }}
+          >
+            <div>
+              <p style={{ ...labelStyle, color: "#ff8080", marginBottom: 6 }}>// TRANSMISSION FAILED</p>
+              <p style={{
+                fontFamily: "var(--font-accent)",
+                fontSize: 13,
+                color: "var(--ink-secondary)",
+                margin: 0,
+              }}>
+                {generateMutation.error instanceof Error
+                  ? generateMutation.error.message
+                  : "Something went wrong."}
+              </p>
+            </div>
+            <button
+              onClick={() => generateMutation.reset()}
+              style={{
+                background: "transparent",
+                color: "#ff8080",
+                border: "1px solid rgba(255,80,80,0.4)",
+                fontFamily: "var(--font-accent)",
+                fontSize: 11,
+                letterSpacing: "0.12em",
+                textTransform: "uppercase",
+                padding: "10px 16px",
+                borderRadius: 6,
+                cursor: "pointer",
+              }}
+            >
+              RETRY
+            </button>
+          </div>
+        )}
+
+        {!activePost && !historyQuery.isLoading && (historyQuery.data?.posts?.length ?? 0) === 0 && (
+          <EmptyState />
+        )}
 
         {activePost && (
           <div id="approval-queue" className="mt-12">
@@ -490,7 +564,7 @@ function HistorySection({ posts, loading, onView }: { posts: Post[]; loading: bo
         overflow: "hidden",
       }}>
         {loading ? (
-          <div className="p-8 text-center" style={{ ...labelStyle }}>LOADING…</div>
+          <HistorySkeleton />
         ) : posts.length === 0 ? (
           <div className="p-10 text-center">
             <p style={{ ...labelStyle, marginBottom: 8 }}>// LOG EMPTY</p>
@@ -605,6 +679,7 @@ function ExportActions({ platform, content }: { platform: Platform; content: str
           style={btnPrimary}
           onClick={() => {
             generateLinkedInPdf(content);
+            track({ name: "pdf_downloaded" });
             toast.success("PDF downloaded. Upload to LinkedIn as a document post.");
           }}
         >
@@ -625,7 +700,10 @@ function ExportActions({ platform, content }: { platform: Platform; content: str
       <button
         style={btnPrimary}
         title="Paste this into Medium's editor — formatting is preserved"
-        onClick={() => copyToClipboard(content, "Markdown copied — paste directly into Medium editor.")}
+        onClick={() => {
+          copyToClipboard(content, "Markdown copied — paste directly into Medium editor.");
+          track({ name: "markdown_copied" });
+        }}
       >
         COPY MARKDOWN
       </button>
@@ -643,6 +721,93 @@ function ExportActions({ platform, content }: { platform: Platform; content: str
     </button>
   );
 }
+
+function EmptyState() {
+  return (
+    <div
+      className="mt-16 mb-8 px-6 text-center"
+      style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 18 }}
+    >
+      <style>{`
+        @keyframes relay-line-pulse {
+          0%, 100% { opacity: 0.15; transform: scaleX(0.6); }
+          50%      { opacity: 0.9;  transform: scaleX(1); }
+        }
+      `}</style>
+      <h2
+        style={{
+          fontFamily: "var(--font-display)",
+          fontWeight: 500,
+          fontSize: "clamp(28px, 5vw, 44px)",
+          lineHeight: 1.1,
+          color: "var(--ink-primary)",
+          maxWidth: 640,
+          margin: 0,
+        }}
+      >
+        Your X posts deserve a wider audience.
+      </h2>
+      <p
+        style={{
+          fontFamily: "var(--font-body)",
+          fontWeight: 300,
+          fontSize: 16,
+          color: "var(--ink-secondary)",
+          maxWidth: 480,
+          margin: 0,
+        }}
+      >
+        Paste a post above — RELAY handles the rest.
+      </p>
+      <div
+        aria-hidden
+        style={{
+          width: 120,
+          height: 2,
+          background: "var(--accent)",
+          borderRadius: 2,
+          marginTop: 10,
+          transformOrigin: "center",
+          animation: "relay-line-pulse 2.4s ease-in-out infinite",
+        }}
+      />
+    </div>
+  );
+}
+
+function HistorySkeleton() {
+  const cellBase: CSSProperties = {
+    background: "var(--void-03)",
+    borderRadius: 4,
+    height: 12,
+    animation: "relay-pulse 1.4s ease-in-out infinite",
+  };
+  return (
+    <div style={{ padding: "8px 0" }}>
+      {[0, 1, 2, 3].map((i) => (
+        <div
+          key={i}
+          style={{
+            display: "grid",
+            gridTemplateColumns: "90px 1fr 90px 90px 90px 60px",
+            gap: 16,
+            padding: "16px 16px",
+            borderBottom: i === 3 ? "none" : "1px solid var(--void-04)",
+            alignItems: "center",
+          }}
+        >
+          <div style={{ ...cellBase, width: 70 }} />
+          <div style={{ ...cellBase, width: "85%" }} />
+          <div style={{ ...cellBase, width: 64, height: 18, borderRadius: 4 }} />
+          <div style={{ ...cellBase, width: 64, height: 18, borderRadius: 4 }} />
+          <div style={{ ...cellBase, width: 64, height: 18, borderRadius: 4 }} />
+          <div style={{ ...cellBase, width: 40, height: 18, borderRadius: 4 }} />
+        </div>
+      ))}
+    </div>
+  );
+}
+
 
 
 
