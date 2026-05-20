@@ -71,8 +71,14 @@ async function callLovableAI(prompt: string): Promise<string> {
   return content;
 }
 
-function withSignature(body: string): string {
-  return `${body.trim()}\n\n${SIGNATURE}`;
+function withSignature(body: string, platform: "linkedin" | "medium" | "facebook"): string {
+  const trimmed = body.trim();
+  if (platform === "medium") {
+    // Ensure horizontal rule before attribution
+    if (/\n---\s*$/.test(trimmed)) return `${trimmed}\n\n${SIGNATURE}`;
+    return `${trimmed}\n\n---\n\n${SIGNATURE}`;
+  }
+  return `${trimmed}\n\n${SIGNATURE}`;
 }
 
 export const generateVersions = createServerFn({ method: "POST" })
