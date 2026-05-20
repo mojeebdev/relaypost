@@ -700,7 +700,10 @@ function ExportActions({ platform, content }: { platform: Platform; content: str
       <button
         style={btnPrimary}
         title="Paste this into Medium's editor — formatting is preserved"
-        onClick={() => copyToClipboard(content, "Markdown copied — paste directly into Medium editor.")}
+        onClick={() => {
+          copyToClipboard(content, "Markdown copied — paste directly into Medium editor.");
+          track({ name: "markdown_copied" });
+        }}
       >
         COPY MARKDOWN
       </button>
