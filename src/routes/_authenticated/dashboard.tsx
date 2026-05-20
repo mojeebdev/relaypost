@@ -564,7 +564,7 @@ function HistorySection({ posts, loading, onView }: { posts: Post[]; loading: bo
         overflow: "hidden",
       }}>
         {loading ? (
-          <div className="p-8 text-center" style={{ ...labelStyle }}>LOADING…</div>
+          <HistorySkeleton />
         ) : posts.length === 0 ? (
           <div className="p-10 text-center">
             <p style={{ ...labelStyle, marginBottom: 8 }}>// LOG EMPTY</p>
