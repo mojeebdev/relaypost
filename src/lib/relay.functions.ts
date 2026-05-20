@@ -100,9 +100,9 @@ export const generateVersions = createServerFn({ method: "POST" })
       .insert({
         user_id: userId,
         original_x_post: data.originalXPost,
-        linkedin_version: withSignature(linkedin),
-        medium_version: withSignature(medium),
-        facebook_version: withSignature(facebook),
+        linkedin_version: withSignature(linkedin, "linkedin"),
+        medium_version: withSignature(medium, "medium"),
+        facebook_version: withSignature(facebook, "facebook"),
       })
       .select()
       .single();
