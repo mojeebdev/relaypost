@@ -406,8 +406,14 @@ function DashboardPage() {
                         {status === "published" ? "PUBLISHED" : status === "approved" ? "APPROVED" : "APPROVE"}
                       </button>
                     </footer>
+
+                    {content && <ExportActions platform={p.key} content={content} />}
                   </article>
                 );
+              })}
+            </div>
+          </div>
+        )}
               })}
             </div>
           </div>
