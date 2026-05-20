@@ -5,6 +5,24 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { generateVersions, listPosts, getPost } from "@/lib/relay.functions";
 import { supabase } from "@/integrations/supabase/client";
+import { generateLinkedInPdf } from "@/lib/linkedin-pdf";
+
+/** Strip [SLIDE N] labels to make a LinkedIn caption suitable to paste alongside the PDF. */
+function linkedinCaption(text: string): string {
+  return text
+    .replace(/\[SLIDE\s*\d+\][^\n]*\n?/gi, "")
+    .replace(/\n{3,}/g, "\n\n")
+    .trim();
+}
+
+async function copyToClipboard(text: string, successMsg: string) {
+  try {
+    await navigator.clipboard.writeText(text);
+    toast.success(successMsg);
+  } catch {
+    toast.error("Could not access clipboard");
+  }
+}
 
 export const Route = createFileRoute("/_authenticated/dashboard")({
   component: DashboardPage,
@@ -388,6 +406,8 @@ function DashboardPage() {
                         {status === "published" ? "PUBLISHED" : status === "approved" ? "APPROVED" : "APPROVE"}
                       </button>
                     </footer>
+
+                    {content && <ExportActions platform={p.key} content={content} />}
                   </article>
                 );
               })}
@@ -548,5 +568,81 @@ function HistorySection({ posts, loading, onView }: { posts: Post[]; loading: bo
     </section>
   );
 }
+
+function ExportActions({ platform, content }: { platform: Platform; content: string }) {
+  const btnPrimary: CSSProperties = {
+    flex: 1,
+    background: "var(--accent)",
+    color: "#000",
+    border: "none",
+    fontFamily: "var(--font-display)",
+    fontWeight: 500,
+    fontSize: 11,
+    letterSpacing: "0.1em",
+    padding: "10px",
+    borderRadius: 6,
+    cursor: "pointer",
+  };
+  const btnGhost: CSSProperties = {
+    flex: 1,
+    background: "transparent",
+    color: "var(--ink-secondary)",
+    border: "1px solid var(--void-05)",
+    fontFamily: "var(--font-accent)",
+    fontSize: 10,
+    letterSpacing: "0.12em",
+    textTransform: "uppercase",
+    padding: "10px",
+    borderRadius: 6,
+    cursor: "pointer",
+  };
+
+  if (platform === "linkedin") {
+    const caption = linkedinCaption(content);
+    return (
+      <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+        <button
+          style={btnPrimary}
+          onClick={() => {
+            generateLinkedInPdf(content);
+            toast.success("PDF downloaded. Upload to LinkedIn as a document post.");
+          }}
+        >
+          ↓ DOWNLOAD PDF
+        </button>
+        <button
+          style={btnGhost}
+          onClick={() => copyToClipboard(caption, "Caption copied — paste alongside your PDF upload.")}
+        >
+          COPY POST CAPTION
+        </button>
+      </div>
+    );
+  }
+
+  if (platform === "medium") {
+    return (
+      <button
+        style={btnPrimary}
+        title="Paste this into Medium's editor — formatting is preserved"
+        onClick={() => copyToClipboard(content, "Markdown copied — paste directly into Medium editor.")}
+      >
+        COPY MARKDOWN
+      </button>
+    );
+  }
+
+  // Facebook
+  return (
+    <button
+      style={btnPrimary}
+      title="Paste this into Facebook — the formatting is optimized for FB's algorithm"
+      onClick={() => copyToClipboard(content, "Post copied — paste into Facebook.")}
+    >
+      COPY POST
+    </button>
+  );
+}
+
 
 

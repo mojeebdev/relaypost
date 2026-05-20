@@ -2,14 +2,48 @@ import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 
-const SIGNATURE = "This post was first published on X — follow @mojeebeth for more.";
+const SIGNATURE = "— First published on X. Follow @mojeebeth for daily builds and breakdowns.";
 
-const SYSTEM = `You are RELAY, a content reformatter. You take a short X (Twitter) post and adapt it for another platform while preserving the author's voice, ideas, and specifics. Never invent facts. Never add hashtags unless they were already there. Output ONLY the reformatted post text — no preamble, no quotes, no commentary, no markdown code fences.`;
+const SYSTEM = `You are RELAY, a content reformatter. First, identify the CORE IDEA in the X post. Then reformat it natively for the target platform while preserving the author's voice, ideas, and specifics. Never invent facts. Never add hashtags unless they were already there. Output ONLY the reformatted post text — no preamble, no quotes, no commentary, no markdown code fences.`;
 
 const PROMPTS = {
-  linkedin: (post: string) => `Reformat the following X post as a LinkedIn document post (the kind that becomes a PDF carousel-style long-form post). Use a strong opening line on its own line, then short paragraphs separated by blank lines. No emojis unless in the source. Keep it professional but warm. Length: ~150-280 words.\n\nSource X post:\n"""${post}"""`,
-  medium: (post: string) => `Reformat the following X post as a clean Medium article in Markdown. Add a short, specific H1 title, then 2-4 short sections with H2 subheads, then a closing paragraph. Use lists or blockquotes only if they genuinely help. Length: ~250-450 words.\n\nSource X post:\n"""${post}"""`,
-  facebook: (post: string) => `Reformat the following X post as a plain text Facebook post. Conversational, line breaks between thoughts, slightly longer than the original but not bloated. No markdown, no hashtags unless in the source. Length: ~80-180 words.\n\nSource X post:\n"""${post}"""`,
+  linkedin: (post: string) => `Reformat the following X post as a LinkedIn CAROUSEL / DOCUMENT POST SCRIPT.
+
+Structure — output as labeled slides:
+[SLIDE 1] — Hook: the most compelling single line from the post. Short. Punchy.
+[SLIDE 2] — First key point, expanded with one sentence of context.
+[SLIDE 3] — Second key point, expanded with one sentence of context.
+[SLIDE 4] — Third key point, expanded with one sentence of context.
+[SLIDE 5] — Fourth key point or insight, expanded.
+[SLIDE 6] — CTA: ask the reader to follow + a specific engagement prompt (e.g. "What's your take? Drop it below.").
+
+Tone: professional but human, first-person. Keep each slide tight — a few short lines max.
+
+Source X post:
+"""${post}"""`,
+  medium: (post: string) => `Reformat the following X post as a full MEDIUM ARTICLE in clean Markdown.
+
+Requirements:
+- Start with an H1 title (#) — a compelling, specific title you craft from the post's core idea.
+- 2-4 H2 subheads (##), each followed by an expanded paragraph (3-5 sentences).
+- Thoughtful, essay-like tone — expand each point with reasoning, not filler.
+- End with a horizontal rule (---) on its own line BEFORE the closing attribution line.
+
+Length: ~350-550 words.
+
+Source X post:
+"""${post}"""`,
+  facebook: (post: string) => `Reformat the following X post as a FACEBOOK POST.
+
+Requirements:
+- Conversational, warm, community-feeling tone — like talking to friends.
+- Remove all technical jargon; use plain language.
+- Weave exactly 3 relevant emojis naturally INSIDE the text (not stacked at the end).
+- Short line breaks between thoughts.
+- Strictly under 300 words.
+
+Source X post:
+"""${post}"""`,
 };
 
 async function callLovableAI(prompt: string): Promise<string> {
@@ -37,8 +71,14 @@ async function callLovableAI(prompt: string): Promise<string> {
   return content;
 }
 
-function withSignature(body: string): string {
-  return `${body.trim()}\n\n${SIGNATURE}`;
+function withSignature(body: string, platform: "linkedin" | "medium" | "facebook"): string {
+  const trimmed = body.trim();
+  if (platform === "medium") {
+    // Ensure horizontal rule before attribution
+    if (/\n---\s*$/.test(trimmed)) return `${trimmed}\n\n${SIGNATURE}`;
+    return `${trimmed}\n\n---\n\n${SIGNATURE}`;
+  }
+  return `${trimmed}\n\n${SIGNATURE}`;
 }
 
 export const generateVersions = createServerFn({ method: "POST" })
@@ -60,9 +100,9 @@ export const generateVersions = createServerFn({ method: "POST" })
       .insert({
         user_id: userId,
         original_x_post: data.originalXPost,
-        linkedin_version: withSignature(linkedin),
-        medium_version: withSignature(medium),
-        facebook_version: withSignature(facebook),
+        linkedin_version: withSignature(linkedin, "linkedin"),
+        medium_version: withSignature(medium, "medium"),
+        facebook_version: withSignature(facebook, "facebook"),
       })
       .select()
       .single();
