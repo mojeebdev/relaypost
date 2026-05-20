@@ -414,10 +414,6 @@ function DashboardPage() {
             </div>
           </div>
         )}
-              })}
-            </div>
-          </div>
-        )}
 
         <HistorySection
           posts={historyQuery.data?.posts as Post[] | undefined ?? []}
