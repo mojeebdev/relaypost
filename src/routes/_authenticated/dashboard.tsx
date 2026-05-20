@@ -549,4 +549,4 @@ function HistorySection({ posts, loading, onView }: { posts: Post[]; loading: bo
   );
 }
 
-void useEffect;
+
