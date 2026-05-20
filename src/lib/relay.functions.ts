@@ -70,3 +70,30 @@ export const generateVersions = createServerFn({ method: "POST" })
     if (error) throw new Error(error.message);
     return { post: row };
   });
+
+export const listPosts = createServerFn({ method: "GET" })
+  .middleware([requireSupabaseAuth])
+  .handler(async ({ context }) => {
+    const { supabase } = context;
+    const { data, error } = await supabase
+      .from("posts")
+      .select("id, original_x_post, linkedin_status, medium_status, facebook_status, created_at, published_at")
+      .order("created_at", { ascending: false })
+      .limit(50);
+    if (error) throw new Error(error.message);
+    return { posts: data ?? [] };
+  });
+
+export const getPost = createServerFn({ method: "GET" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((input) => z.object({ id: z.string().uuid() }).parse(input))
+  .handler(async ({ data, context }) => {
+    const { supabase } = context;
+    const { data: row, error } = await supabase
+      .from("posts")
+      .select("*")
+      .eq("id", data.id)
+      .single();
+    if (error) throw new Error(error.message);
+    return { post: row };
+  });
