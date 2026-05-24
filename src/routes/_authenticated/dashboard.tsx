@@ -481,7 +481,7 @@ function DashboardPage() {
                       </button>
                     </footer>
 
-                    {content && <ExportActions platform={p.key} content={content} />}
+                    {content && <ExportActions platform={p.key} content={content} postId={activePost.id} />}
                   </article>
                 );
               })}
