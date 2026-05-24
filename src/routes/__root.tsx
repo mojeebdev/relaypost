@@ -82,6 +82,7 @@ function RootShell({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en">
       <head>
+        {/* Build trigger: refresh env vars from Lovable Cloud */}
         <HeadContent />
         <script
           dangerouslySetInnerHTML={{
