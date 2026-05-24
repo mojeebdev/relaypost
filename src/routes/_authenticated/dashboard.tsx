@@ -460,7 +460,7 @@ function DashboardPage() {
                       color: "var(--ink-secondary)",
                       whiteSpace: "pre-wrap",
                     }}>
-                      {content ?? "—"}
+                      <LinkifyHandle text={content ?? "—"} />
                     </div>
 
                     <footer className="flex gap-2">

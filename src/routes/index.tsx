@@ -218,7 +218,16 @@ function LandingPage() {
           ...label,
         }}
       >
-        RELAY by mojeebeth · Built during World Product Day Hackathon 2026
+        RELAY by{" "}
+        <a
+          href="https://x.com/mojeebeth"
+          target="_blank"
+          rel="noopener noreferrer"
+          style={{ color: "var(--accent)", textDecoration: "underline", textUnderlineOffset: 2 }}
+        >
+          mojeebeth
+        </a>
+        {" "}· Built during World Product Day Hackathon 2026
       </footer>
     </div>
   );
