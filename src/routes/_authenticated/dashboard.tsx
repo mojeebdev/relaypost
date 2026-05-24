@@ -147,16 +147,32 @@ function DashboardPage() {
   const generateMutation = useMutation({
     mutationFn: async (originalXPost: string) => generate({ data: { originalXPost } }),
     onSuccess: (res) => {
-      setActivePost(res.post as Post);
+      const post = res.post as Post;
+      setActivePost(post);
       setXPost("");
       queryClient.invalidateQueries({ queryKey: ["posts"] });
       toast.success("Three versions ready. Approve what ships.");
-      track({ name: "post_generated" });
+      track({
+        name: "post_generated",
+        post_id: post.id,
+        original_post_length: post.original_x_post?.length,
+        linkedin_version_length: post.linkedin_version?.length,
+        medium_version_length: post.medium_version?.length,
+        facebook_version_length: post.facebook_version?.length,
+      });
       requestAnimationFrame(() => {
         document.getElementById("approval-queue")?.scrollIntoView({ behavior: "smooth", block: "start" });
       });
     },
-    onError: (err) => toast.error(err instanceof Error ? err.message : "Generation failed"),
+    onError: (err) => {
+      const message = err instanceof Error ? err.message : "Generation failed";
+      toast.error(message);
+      track({
+        name: "content_generation_failed",
+        error_message: message.substring(0, 100),
+        original_post_length: xPost.length,
+      });
+    },
   });
 
   // Sequence loading labels: ANALYZING → REFORMATTING → READY (every 800ms)
@@ -184,8 +200,8 @@ function DashboardPage() {
     if (error) { toast.error(error.message); return; }
     setActivePost({ ...activePost, [`${platform}_status`]: status } as Post);
     queryClient.invalidateQueries({ queryKey: ["posts"] });
-    if (status === "approved") track({ name: "platform_approved", platform });
-    if (status === "skipped") track({ name: "platform_skipped", platform });
+    if (status === "approved") track({ name: "platform_approved", platform, post_id: activePost.id, original_post_length: activePost.original_x_post?.length });
+    if (status === "skipped") track({ name: "platform_skipped", platform, post_id: activePost.id });
   };
 
   const publishAllApproved = async () => {
@@ -200,13 +216,25 @@ function DashboardPage() {
     toast.success("Approved versions marked as published.");
     setActivePost({ ...activePost, ...patch } as Post);
     queryClient.invalidateQueries({ queryKey: ["posts"] });
-    track({ name: "post_published", count });
+    const publishedPlatforms = PLATFORMS.filter(p => activePost[`${p.key}_status`] === "approved").map(p => p.key).join(",");
+    const skippedPlatforms = PLATFORMS.filter(p => activePost[`${p.key}_status`] === "skipped").map(p => p.key).join(",");
+    track({ name: "post_published", count, post_id: activePost.id, platforms_published: publishedPlatforms, platforms_skipped: skippedPlatforms });
   };
 
   const viewPost = async (id: string) => {
     try {
       const res = await getFn({ data: { id } });
-      setActivePost(res.post as Post);
+      const post = res.post as Post;
+      setActivePost(post);
+      const postAgeDays = Math.floor((Date.now() - new Date(post.created_at).getTime()) / (1000 * 60 * 60 * 24));
+      track({
+        name: "post_history_viewed",
+        post_id: post.id,
+        post_age_days: postAgeDays,
+        linkedin_status: post.linkedin_status,
+        medium_status: post.medium_status,
+        facebook_status: post.facebook_status,
+      });
       requestAnimationFrame(() => {
         document.getElementById("approval-queue")?.scrollIntoView({ behavior: "smooth", block: "start" });
       });
@@ -704,7 +732,8 @@ function ExportActions({ platform, content, postId }: { platform: Platform; cont
           style={btnPrimary}
           onClick={() => {
             generateLinkedInPdf(content);
-            track({ name: "pdf_downloaded", platform: "linkedin", postId });
+            const slideCount = (content.match(/\[SLIDE\s*\d+\]/gi) || []).length;
+            track({ name: "pdf_downloaded", platform: "linkedin", postId, slide_count: slideCount || 1 });
             toast.success("PDF downloaded. Upload to LinkedIn as a document post.");
           }}
         >
@@ -714,7 +743,7 @@ function ExportActions({ platform, content, postId }: { platform: Platform; cont
           style={btnGhost}
           onClick={() => {
             copyToClipboard(caption, "Caption copied — paste alongside your PDF upload.");
-            track({ name: "post_copied", platform: "linkedin", postId });
+            track({ name: "post_copied", platform: "linkedin", postId, content_length: caption.length });
           }}
         >
           COPY POST CAPTION
@@ -730,7 +759,7 @@ function ExportActions({ platform, content, postId }: { platform: Platform; cont
         title="Paste this into Medium's editor — formatting is preserved"
         onClick={() => {
           copyToClipboard(content, "Markdown copied — paste directly into Medium editor.");
-          track({ name: "markdown_copied", platform: "medium", postId });
+          track({ name: "markdown_copied", platform: "medium", postId, content_length: content.length });
         }}
       >
         COPY MARKDOWN
@@ -745,7 +774,7 @@ function ExportActions({ platform, content, postId }: { platform: Platform; cont
       title="Paste this into Facebook — the formatting is optimized for FB's algorithm"
       onClick={() => {
         copyToClipboard(content, "Post copied — paste into Facebook.");
-        track({ name: "post_copied", platform: "facebook", postId });
+        track({ name: "post_copied", platform: "facebook", postId, content_length: content.length });
       }}
     >
       COPY POST
