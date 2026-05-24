@@ -643,7 +643,7 @@ function HistorySection({ posts, loading, onView }: { posts: Post[]; loading: bo
   );
 }
 
-function ExportActions({ platform, content }: { platform: Platform; content: string }) {
+function ExportActions({ platform, content, postId }: { platform: Platform; content: string; postId?: string }) {
   const btnPrimary: CSSProperties = {
     flex: 1,
     background: "var(--accent)",
@@ -679,7 +679,7 @@ function ExportActions({ platform, content }: { platform: Platform; content: str
           style={btnPrimary}
           onClick={() => {
             generateLinkedInPdf(content);
-            track({ name: "pdf_downloaded" });
+            track({ name: "pdf_downloaded", platform: "linkedin", postId });
             toast.success("PDF downloaded. Upload to LinkedIn as a document post.");
           }}
         >
@@ -687,7 +687,10 @@ function ExportActions({ platform, content }: { platform: Platform; content: str
         </button>
         <button
           style={btnGhost}
-          onClick={() => copyToClipboard(caption, "Caption copied — paste alongside your PDF upload.")}
+          onClick={() => {
+            copyToClipboard(caption, "Caption copied — paste alongside your PDF upload.");
+            track({ name: "post_copied", platform: "linkedin", postId });
+          }}
         >
           COPY POST CAPTION
         </button>
@@ -702,7 +705,7 @@ function ExportActions({ platform, content }: { platform: Platform; content: str
         title="Paste this into Medium's editor — formatting is preserved"
         onClick={() => {
           copyToClipboard(content, "Markdown copied — paste directly into Medium editor.");
-          track({ name: "markdown_copied" });
+          track({ name: "markdown_copied", platform: "medium", postId });
         }}
       >
         COPY MARKDOWN
@@ -715,7 +718,10 @@ function ExportActions({ platform, content }: { platform: Platform; content: str
     <button
       style={btnPrimary}
       title="Paste this into Facebook — the formatting is optimized for FB's algorithm"
-      onClick={() => copyToClipboard(content, "Post copied — paste into Facebook.")}
+      onClick={() => {
+        copyToClipboard(content, "Post copied — paste into Facebook.");
+        track({ name: "post_copied", platform: "facebook", postId });
+      }}
     >
       COPY POST
     </button>
