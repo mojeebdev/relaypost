@@ -27,6 +27,31 @@ async function copyToClipboard(text: string, successMsg: string) {
   }
 }
 
+function LinkifyHandle({ text }: { text: string }) {
+  const parts = text.split("@mojeebeth");
+  if (parts.length === 1) return <>{text}</>;
+  return (
+    <>
+      {parts.map((part, i) => (
+        <span key={i}>
+          {part}
+          {i < parts.length - 1 && (
+            <a
+              href="https://x.com/mojeebeth"
+              target="_blank"
+              rel="noopener noreferrer"
+              style={{ color: "var(--accent)", textDecoration: "underline", textUnderlineOffset: 2 }}
+              onClick={(e) => e.stopPropagation()}
+            >
+              @mojeebeth
+            </a>
+          )}
+        </span>
+      ))}
+    </>
+  );
+}
+
 export const Route = createFileRoute("/_authenticated/dashboard")({
   component: DashboardPage,
 });
@@ -435,7 +460,7 @@ function DashboardPage() {
                       color: "var(--ink-secondary)",
                       whiteSpace: "pre-wrap",
                     }}>
-                      {content ?? "—"}
+                      <LinkifyHandle text={content ?? "—"} />
                     </div>
 
                     <footer className="flex gap-2">
