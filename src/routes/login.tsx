@@ -2,6 +2,7 @@ import { createFileRoute, useNavigate, redirect } from "@tanstack/react-router";
 import { useState, type FormEvent } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
+import { track } from "@/lib/analytics";
 
 export const Route = createFileRoute("/login")({
   beforeLoad: async () => {
@@ -29,11 +30,13 @@ function LoginPage() {
           options: { emailRedirectTo: window.location.origin },
         });
         if (error) throw error;
+        track({ name: "user_signed_up", auth_method: "email", email_domain: email.split("@")[1] });
         pendo.track("user_signed_up", { authMethod: "email" });
         toast.success("Check your email to confirm your account.");
       } else {
         const { error } = await supabase.auth.signInWithPassword({ email, password });
         if (error) throw error;
+        track({ name: "user_signed_in", auth_method: "email" });
         pendo.track("user_signed_in", { authMethod: "email" });
         navigate({ to: "/dashboard" });
       }
