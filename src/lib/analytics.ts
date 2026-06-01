@@ -7,6 +7,7 @@ type NovusAPI = {
 
 type PendoAPI = {
   track: (event: string, properties?: Record<string, unknown>) => void;
+  clearSession: () => void;
 };
 
 declare global {
@@ -27,7 +28,8 @@ export type RelayEvent =
   | { name: "user_signed_up"; auth_method: string; email_domain?: string }
   | { name: "user_signed_in"; auth_method: string }
   | { name: "content_generation_failed"; error_message?: string; original_post_length?: number }
-  | { name: "post_history_viewed"; post_id: string; post_age_days?: number; linkedin_status?: string; medium_status?: string; facebook_status?: string };
+  | { name: "post_history_viewed"; post_id: string; post_age_days?: number; linkedin_status?: string; medium_status?: string; facebook_status?: string }
+  | { name: "user_signed_out" };
 
 export function track(event: RelayEvent) {
   if (typeof window === "undefined") return;
