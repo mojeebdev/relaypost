@@ -1,12 +1,15 @@
 import { Link, useNavigate } from "@tanstack/react-router";
 import { supabase } from "@/integrations/supabase/client";
+import { track } from "@/lib/analytics";
 
 export function Navbar() {
   const navigate = useNavigate();
 
   const handleSignOut = async () => {
-    pendo.track("user_signed_out");
-    pendo.clearSession();
+    track({ name: "user_signed_out" });
+    if (typeof window !== "undefined" && window.pendo) {
+      window.pendo.clearSession();
+    }
     await supabase.auth.signOut();
     navigate({ to: "/login" });
   };
