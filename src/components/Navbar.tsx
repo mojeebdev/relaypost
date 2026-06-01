@@ -5,6 +5,7 @@ export function Navbar() {
   const navigate = useNavigate();
 
   const handleSignOut = async () => {
+    pendo.track("user_signed_out");
     pendo.clearSession();
     await supabase.auth.signOut();
     navigate({ to: "/login" });

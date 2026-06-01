@@ -152,6 +152,11 @@ function DashboardPage() {
       queryClient.invalidateQueries({ queryKey: ["posts"] });
       toast.success("Three versions ready. Approve what ships.");
       track({ name: "post_generated" });
+      pendo.track("post_generated", {
+        postId: (res.post as Post).id,
+        originalPostLength: xPost.length,
+        platformCount: 3,
+      });
       requestAnimationFrame(() => {
         document.getElementById("approval-queue")?.scrollIntoView({ behavior: "smooth", block: "start" });
       });
@@ -184,8 +189,14 @@ function DashboardPage() {
     if (error) { toast.error(error.message); return; }
     setActivePost({ ...activePost, [`${platform}_status`]: status } as Post);
     queryClient.invalidateQueries({ queryKey: ["posts"] });
-    if (status === "approved") track({ name: "platform_approved", platform });
-    if (status === "skipped") track({ name: "platform_skipped", platform });
+    if (status === "approved") {
+      track({ name: "platform_approved", platform });
+      pendo.track("platform_approved", { platform, postId: activePost.id });
+    }
+    if (status === "skipped") {
+      track({ name: "platform_skipped", platform });
+      pendo.track("platform_skipped", { platform, postId: activePost.id });
+    }
   };
 
   const publishAllApproved = async () => {
@@ -201,6 +212,15 @@ function DashboardPage() {
     setActivePost({ ...activePost, ...patch } as Post);
     queryClient.invalidateQueries({ queryKey: ["posts"] });
     track({ name: "post_published", count });
+    const publishedPlatforms = PLATFORMS
+      .filter(p => activePost[`${p.key}_status`] === "approved")
+      .map(p => p.key)
+      .join(",");
+    pendo.track("post_published", {
+      postId: activePost.id,
+      count,
+      publishedPlatforms,
+    });
   };
 
   const viewPost = async (id: string) => {
@@ -705,6 +725,11 @@ function ExportActions({ platform, content, postId }: { platform: Platform; cont
           onClick={() => {
             generateLinkedInPdf(content);
             track({ name: "pdf_downloaded", platform: "linkedin", postId });
+            pendo.track("pdf_downloaded", {
+              platform: "linkedin",
+              postId,
+              slideCount: (content.match(/\[SLIDE\s*\d+\]/gi) || []).length,
+            });
             toast.success("PDF downloaded. Upload to LinkedIn as a document post.");
           }}
         >
@@ -715,6 +740,11 @@ function ExportActions({ platform, content, postId }: { platform: Platform; cont
           onClick={() => {
             copyToClipboard(caption, "Caption copied — paste alongside your PDF upload.");
             track({ name: "post_copied", platform: "linkedin", postId });
+            pendo.track("post_copied", {
+              platform: "linkedin",
+              postId,
+              contentLength: caption.length,
+            });
           }}
         >
           COPY POST CAPTION
@@ -731,6 +761,11 @@ function ExportActions({ platform, content, postId }: { platform: Platform; cont
         onClick={() => {
           copyToClipboard(content, "Markdown copied — paste directly into Medium editor.");
           track({ name: "markdown_copied", platform: "medium", postId });
+          pendo.track("markdown_copied", {
+            platform: "medium",
+            postId,
+            contentLength: content.length,
+          });
         }}
       >
         COPY MARKDOWN
@@ -746,6 +781,11 @@ function ExportActions({ platform, content, postId }: { platform: Platform; cont
       onClick={() => {
         copyToClipboard(content, "Post copied — paste into Facebook.");
         track({ name: "post_copied", platform: "facebook", postId });
+        pendo.track("post_copied", {
+          platform: "facebook",
+          postId,
+          contentLength: content.length,
+        });
       }}
     >
       COPY POST

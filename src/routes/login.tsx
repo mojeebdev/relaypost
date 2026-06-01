@@ -29,10 +29,12 @@ function LoginPage() {
           options: { emailRedirectTo: window.location.origin },
         });
         if (error) throw error;
+        pendo.track("user_signed_up", { authMethod: "email" });
         toast.success("Check your email to confirm your account.");
       } else {
         const { error } = await supabase.auth.signInWithPassword({ email, password });
         if (error) throw error;
+        pendo.track("user_signed_in", { authMethod: "email" });
         navigate({ to: "/dashboard" });
       }
     } catch (err) {
