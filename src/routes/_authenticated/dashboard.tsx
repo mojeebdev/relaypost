@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useEffect, useState, type CSSProperties } from "react";
+import { useEffect, useState, type CSSProperties, type FormEvent } from "react";
 import { useServerFn } from "@tanstack/react-start";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
@@ -159,6 +159,7 @@ function DashboardPage() {
         linkedin_version_length: post.linkedin_version?.length,
         medium_version_length: post.medium_version?.length,
         facebook_version_length: post.facebook_version?.length,
+      });
       track({ name: "post_generated" });
       pendo.track("post_generated", {
         postId: (res.post as Post).id,
@@ -192,7 +193,7 @@ function DashboardPage() {
     return () => { clearTimeout(t1); clearTimeout(t2); };
   }, [generateMutation.isPending]);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
     if (!xPost.trim()) return;
     generateMutation.mutate(xPost.trim());
@@ -233,10 +234,6 @@ function DashboardPage() {
     const skippedPlatforms = PLATFORMS.filter(p => activePost[`${p.key}_status`] === "skipped").map(p => p.key).join(",");
     track({ name: "post_published", count, post_id: activePost.id, platforms_published: publishedPlatforms, platforms_skipped: skippedPlatforms });
     track({ name: "post_published", count });
-    const publishedPlatforms = PLATFORMS
-      .filter(p => activePost[`${p.key}_status`] === "approved")
-      .map(p => p.key)
-      .join(",");
     pendo.track("post_published", {
       postId: activePost.id,
       count,
