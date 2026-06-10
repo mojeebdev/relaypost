@@ -451,8 +451,21 @@ function LandingPage() {
             padding: 120px 24px 80px;
             max-width: none;
           }
+          .hero-content {
+            padding: 120px 24px 60px;
+          }
           .hero-headline {
             font-size: clamp(64px, 16vw, 96px);
+          }
+          .hero-video {
+            object-position: center center;
+          }
+          .hero-overlay {
+            background: linear-gradient(
+              to right,
+              rgba(5, 5, 8, 0.97) 0%,
+              rgba(5, 5, 8, 0.85) 100%
+            );
           }
           .how-inner {
             padding: 80px 24px;
