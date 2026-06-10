@@ -134,6 +134,8 @@ function Hero() {
         textAlign: "center",
         padding: "120px 24px 80px",
         gap: 24,
+        position: "relative",
+        zIndex: 1,
       }}
     >
       <span style={PILL_ACCENT_SOFT}>X-FIRST CONTENT DISTRIBUTION</span>
