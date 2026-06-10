@@ -175,7 +175,7 @@ function Hero() {
         style={{
           background: "rgba(0,255,157,0.06)",
           border: "1px solid rgba(0,255,157,0.2)",
-          color: "rgba(0,255,157,0.7)",
+          color: "#00FF9D",
           fontFamily: "IBM Plex Mono, monospace",
           fontSize: 10,
           letterSpacing: "0.18em",
@@ -183,6 +183,8 @@ function Hero() {
           padding: "8px 20px",
           borderRadius: 999,
           display: "inline-block",
+          position: "relative",
+          zIndex: 1,
         }}
       >
         THREE PLATFORMS. ONE TRANSMISSION.
