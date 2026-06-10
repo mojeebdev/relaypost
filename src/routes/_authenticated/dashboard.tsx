@@ -279,7 +279,7 @@ function DashboardPage() {
       `}</style>
 
       <section className="max-w-5xl mx-auto px-6 pt-12">
-        <PendoStatusButton />
+        
         <div className="mb-8">
           <p style={labelStyle}>// NEW TRANSMISSION</p>
           <h1 className="text-4xl mt-3" style={{ fontFamily: "var(--font-display)", fontWeight: 500 }}>
