@@ -3,7 +3,7 @@ import { useEffect, useState, type CSSProperties, type FormEvent } from "react";
 import { useServerFn } from "@tanstack/react-start";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
-import { generateVersions, listPosts, getPost } from "@/lib/relay.functions";
+import { generateVersions, listPosts, getPost, regeneratePlatform } from "@/lib/relay.functions";
 import { supabase } from "@/integrations/supabase/client";
 import { generateLinkedInPdf } from "@/lib/linkedin-pdf";
 import { track } from "@/lib/analytics";
