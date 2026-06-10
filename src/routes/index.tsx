@@ -157,6 +157,7 @@ function Hero() {
       />
       <div style={{ position: "relative", zIndex: 2 }}>
         <section
+          className="relay-hero-section"
           style={{
             ...GRID_BG,
             backgroundColor: "transparent",
@@ -172,6 +173,17 @@ function Hero() {
             zIndex: 1,
           }}
         >
+          <style>{`
+            @media (min-width: 900px) {
+              .relay-hero-section {
+                align-items: flex-start !important;
+                text-align: left !important;
+                padding-left: clamp(40px, 8vw, 120px) !important;
+                max-width: 720px;
+              }
+            }
+          `}</style>
+
           <span style={{ ...PILL_ACCENT_SOFT, position: "relative", zIndex: 1 }}>X-FIRST CONTENT DISTRIBUTION</span>
 
           <h1
