@@ -1,8 +1,6 @@
 import { createFileRoute, Link, redirect } from "@tanstack/react-router";
-import { useState, type CSSProperties, type SyntheticEvent } from "react";
+import { useState, type CSSProperties } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import diagramAsset from "@/assets/relay-howitworks.png.asset.json";
-import videoAsset from "@/assets/relay-hero.mp4.asset.json";
 
 export const Route = createFileRoute("/")({
   beforeLoad: async () => {
@@ -32,9 +30,6 @@ export const Route = createFileRoute("/")({
 const mono: CSSProperties = { fontFamily: "var(--font-accent)" };
 const display: CSSProperties = { fontFamily: "var(--font-display)" };
 const body: CSSProperties = { fontFamily: "var(--font-body)" };
-
-const HERO_VIDEO_PRIMARY = "/videos/relay-hero.mp4";
-const HOW_IMAGE_PRIMARY = "/images/relay-howitworks.png";
 
 const FAQS = [
   {
@@ -82,16 +77,7 @@ const STEPS = [
 ];
 
 function LandingPage() {
-  const [heroSrc, setHeroSrc] = useState(HERO_VIDEO_PRIMARY);
-  const [diagramSrc, setDiagramSrc] = useState(HOW_IMAGE_PRIMARY);
-
-  const handleHeroError = (_e: SyntheticEvent<HTMLVideoElement>) => {
-    setHeroSrc((current) => (current === HERO_VIDEO_PRIMARY ? videoAsset.url : current));
-  };
-
-  const handleDiagramError = (_e: SyntheticEvent<HTMLImageElement>) => {
-    setDiagramSrc((current) => (current === HOW_IMAGE_PRIMARY ? diagramAsset.url : current));
-  };
+  const mono: CSSProperties = { fontFamily: "var(--font-accent)" };
 
   return (
     <div className="landing-page" style={{ ...body, color: "var(--ink-primary)" }}>
@@ -515,18 +501,7 @@ function LandingPage() {
 
       <div className="card-stack">
         <section className="sticky-card sticky-card-1 hero-section">
-          <video
-            className="hero-video"
-            autoPlay
-            loop
-            muted
-            playsInline
-            src={heroSrc}
-            onError={handleHeroError}
-          >
-            <source src={heroSrc} type="video/mp4" />
-          </video>
-          <div className="hero-overlay" />
+
           <div className="hero-content">
             <p
               style={{
@@ -580,12 +555,7 @@ function LandingPage() {
             >
               // HOW IT WORKS
             </p>
-            <img
-              className="how-diagram"
-              src={diagramSrc}
-              alt="How RELAY works"
-              onError={handleDiagramError}
-            />
+
             <div className="steps-grid">
               {STEPS.map((s) => (
                 <div key={s.n}>
