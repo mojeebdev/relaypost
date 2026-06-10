@@ -11,6 +11,7 @@ import { useEffect, useRef } from "react";
 
 import { Toaster } from "@/components/ui/sonner";
 import { supabase } from "@/integrations/supabase/client";
+import { getAnonVisitorId } from "@/lib/anon-id";
 import appCss from "../styles.css?url";
 
 function NotFoundComponent() {
@@ -115,7 +116,7 @@ function RootComponent() {
 
   useEffect(() => {
     if (!initialized.current && typeof window !== "undefined" && window.pendo) {
-      const anonId = "anon-" + crypto.randomUUID();
+      const anonId = getAnonVisitorId();
       window.pendo.initialize({
         visitor: { id: anonId },
         account: { id: "relay-app" },
