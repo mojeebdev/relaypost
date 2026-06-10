@@ -1,6 +1,8 @@
 import { createFileRoute, Link, redirect } from "@tanstack/react-router";
-import { useState, type CSSProperties } from "react";
+import { useState, type CSSProperties, type SyntheticEvent } from "react";
 import { supabase } from "@/integrations/supabase/client";
+import diagramAsset from "@/assets/relay-howitworks.png.asset.json";
+import videoAsset from "@/assets/relay-hero.mp4.asset.json";
 
 export const Route = createFileRoute("/")({
   beforeLoad: async () => {
@@ -30,6 +32,9 @@ export const Route = createFileRoute("/")({
 const mono: CSSProperties = { fontFamily: "var(--font-accent)" };
 const display: CSSProperties = { fontFamily: "var(--font-display)" };
 const body: CSSProperties = { fontFamily: "var(--font-body)" };
+
+const HERO_VIDEO_PRIMARY = "/videos/relay-hero.mp4";
+const HOW_IMAGE_PRIMARY = "/images/relay-howitworks.png";
 
 const FAQS = [
   {
@@ -77,14 +82,30 @@ const STEPS = [
 ];
 
 function LandingPage() {
+  const [heroSrc, setHeroSrc] = useState(HERO_VIDEO_PRIMARY);
+  const [diagramSrc, setDiagramSrc] = useState(HOW_IMAGE_PRIMARY);
+
+  const handleHeroError = (_e: SyntheticEvent<HTMLVideoElement>) => {
+    setHeroSrc((current) => (current === HERO_VIDEO_PRIMARY ? videoAsset.url : current));
+  };
+
+  const handleDiagramError = (_e: SyntheticEvent<HTMLImageElement>) => {
+    setDiagramSrc((current) => (current === HOW_IMAGE_PRIMARY ? diagramAsset.url : current));
+  };
+
   return (
     <div className="landing-page" style={{ ...body, color: "var(--ink-primary)" }}>
       <style>{`
         @keyframes relay-bounce {
-          0%, 100% { transform: translateY(0); opacity: 0.6; }
-          50% { transform: translateY(6px); opacity: 1; }
+          0%, 100% { transform: rotate(45deg) translateY(0); opacity: 0.6; }
+          50% { transform: rotate(45deg) translateY(6px); opacity: 1; }
         }
         @keyframes relay-pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
+
+        .landing-page {
+          background: #050508;
+          overflow-x: hidden;
+        }
 
         .landing-nav {
           position: fixed;
@@ -120,19 +141,31 @@ function LandingPage() {
         .landing-signin:hover { color: var(--ink-primary); }
 
         .card-stack {
+          position: relative;
           height: 400vh;
         }
         .sticky-card {
           position: sticky;
           top: 0;
+          width: 100%;
           height: 100vh;
+        }
+        .sticky-card-1 {
+          z-index: 1;
           overflow: hidden;
         }
-        .sticky-card-1 { z-index: 1; }
-        .sticky-card-2 { z-index: 2; }
-        .sticky-card-3 { z-index: 3; }
+        .sticky-card-2 {
+          z-index: 2;
+          overflow-x: hidden;
+          overflow-y: auto;
+        }
+        .sticky-card-3 {
+          z-index: 3;
+          overflow: hidden;
+        }
         .sticky-card-4 {
           z-index: 4;
+          overflow-x: hidden;
           overflow-y: auto;
         }
 
@@ -140,6 +173,8 @@ function LandingPage() {
           position: relative;
           width: 100%;
           height: 100%;
+          min-height: 100vh;
+          background: #050508;
         }
         .hero-video {
           position: absolute;
@@ -160,6 +195,7 @@ function LandingPage() {
             rgba(5, 5, 8, 0.2) 100%
           );
           z-index: 1;
+          pointer-events: none;
         }
         .hero-content {
           position: relative;
@@ -255,6 +291,7 @@ function LandingPage() {
           flex-direction: column;
           align-items: center;
           gap: 8px;
+          pointer-events: none;
         }
         .scroll-hint-text {
           font-family: var(--font-accent);
@@ -269,12 +306,11 @@ function LandingPage() {
           height: 10px;
           border-right: 1.5px solid #4A4A5A;
           border-bottom: 1.5px solid #4A4A5A;
-          transform: rotate(45deg);
           animation: relay-bounce 2s ease-in-out infinite;
         }
 
         .how-section {
-          background: #050508;
+          background-color: #050508;
           background-image:
             linear-gradient(#1E1E28 1px, transparent 1px),
             linear-gradient(90deg, #1E1E28 1px, transparent 1px);
@@ -288,8 +324,8 @@ function LandingPage() {
           flex-direction: column;
           align-items: center;
           gap: 48px;
-          height: 100%;
-          overflow-y: auto;
+          min-height: 100vh;
+          box-sizing: border-box;
         }
         .how-diagram {
           width: 100%;
@@ -313,11 +349,12 @@ function LandingPage() {
         .origin-inner {
           max-width: 800px;
           margin: 0 auto;
-          padding: 0 clamp(24px, 6vw, 80px);
-          height: 100%;
+          padding: clamp(80px, 10vh, 120px) clamp(24px, 6vw, 80px);
+          min-height: 100vh;
           display: flex;
           flex-direction: column;
           justify-content: center;
+          box-sizing: border-box;
         }
         .origin-headline {
           font-family: var(--font-display);
@@ -350,6 +387,8 @@ function LandingPage() {
           max-width: 800px;
           margin: 0 auto;
           padding: 80px clamp(24px, 6vw, 80px);
+          min-height: 100vh;
+          box-sizing: border-box;
         }
         .faq-item {
           border-bottom: 1px solid #2C2C3A;
@@ -386,6 +425,8 @@ function LandingPage() {
         }
 
         .landing-footer {
+          position: relative;
+          z-index: 5;
           border-top: 1px solid #2C2C3A;
           background: #0C0C12;
           padding: 40px clamp(24px, 6vw, 80px);
@@ -419,9 +460,8 @@ function LandingPage() {
             overflow: visible;
           }
           .sticky-card-1 { min-height: 100vh; }
-          .sticky-card-4 { overflow-y: visible; }
           .hero-content {
-            padding: 120px 24px 60px;
+            padding: 120px 24px 80px;
             max-width: none;
           }
           .hero-headline {
@@ -429,17 +469,20 @@ function LandingPage() {
           }
           .how-inner {
             padding: 80px 24px;
+            min-height: auto;
           }
           .steps-grid {
             grid-template-columns: 1fr;
           }
           .origin-inner {
             padding: 80px 24px;
+            min-height: auto;
           }
           .faq-inner {
             padding: 80px 24px;
             max-width: none;
             width: 100%;
+            min-height: auto;
           }
           .footer-row {
             flex-direction: column;
@@ -471,10 +514,17 @@ function LandingPage() {
       </nav>
 
       <div className="card-stack">
-        {/* SECTION 1 — HERO */}
         <section className="sticky-card sticky-card-1 hero-section">
-          <video className="hero-video" autoPlay loop muted playsInline>
-            <source src="/videos/relay-hero.mp4" type="video/mp4" />
+          <video
+            className="hero-video"
+            autoPlay
+            loop
+            muted
+            playsInline
+            src={heroSrc}
+            onError={handleHeroError}
+          >
+            <source src={heroSrc} type="video/mp4" />
           </video>
           <div className="hero-overlay" />
           <div className="hero-content">
@@ -516,7 +566,6 @@ function LandingPage() {
           </div>
         </section>
 
-        {/* SECTION 2 — HOW IT WORKS */}
         <section id="how" className="sticky-card sticky-card-2 how-section">
           <div className="how-inner">
             <p
@@ -533,8 +582,9 @@ function LandingPage() {
             </p>
             <img
               className="how-diagram"
-              src="/images/relay-howitworks.png"
+              src={diagramSrc}
               alt="How RELAY works"
+              onError={handleDiagramError}
             />
             <div className="steps-grid">
               {STEPS.map((s) => (
@@ -588,7 +638,6 @@ function LandingPage() {
           </div>
         </section>
 
-        {/* SECTION 3 — ORIGIN STORY */}
         <section className="sticky-card sticky-card-3 origin-section">
           <div className="origin-inner">
             <p
@@ -639,7 +688,6 @@ function LandingPage() {
           </div>
         </section>
 
-        {/* SECTION 4 — FAQ */}
         <section className="sticky-card sticky-card-4 faq-section">
           <div className="faq-inner">
             <p
@@ -660,7 +708,6 @@ function LandingPage() {
         </section>
       </div>
 
-      {/* SECTION 5 — FOOTER */}
       <footer className="landing-footer">
         <div className="footer-row">
           <div style={{ display: "flex", alignItems: "center", flexWrap: "wrap" }}>
