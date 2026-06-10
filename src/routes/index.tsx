@@ -138,7 +138,7 @@ function Hero() {
         zIndex: 1,
       }}
     >
-      <span style={PILL_ACCENT_SOFT}>X-FIRST CONTENT DISTRIBUTION</span>
+      <span style={{ ...PILL_ACCENT_SOFT, position: "relative", zIndex: 1 }}>X-FIRST CONTENT DISTRIBUTION</span>
 
       <h1
         style={{
@@ -149,6 +149,8 @@ function Hero() {
           letterSpacing: "0.05em",
           lineHeight: 0.88,
           margin: 0,
+          position: "relative",
+          zIndex: 1,
         }}
       >
         RELAY
