@@ -472,7 +472,7 @@ function LandingPage() {
 
           <div className="steps-grid">
             {STEPS.map((s) => (
-              <div key={s.n}>
+              <div key={s.n} className="step-card">
                 <div
                   style={{
                     ...mono,
