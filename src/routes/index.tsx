@@ -159,10 +159,12 @@ function Hero() {
           fontFamily: "IBM Plex Sans, sans-serif",
           fontWeight: 300,
           fontSize: 16,
-          color: "rgba(240,240,248,0.65)",
+          color: "rgba(240,240,248,0.7)",
           lineHeight: 1.7,
           maxWidth: 400,
           margin: 0,
+          position: "relative",
+          zIndex: 1,
         }}
       >
         Write once on X. Distribute everywhere.
