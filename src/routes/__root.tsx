@@ -94,7 +94,7 @@ function RootShell({ children }: { children: React.ReactNode }) {
     o[m]=o[m]||function(){o._q[m===v[0]?'unshift':'push']([m].concat([].slice.call(arguments,0)));};})(v[w]);
     y=e.createElement(n);y.async=!0;y.src='https://cdn.pendo.io/agent/static/'+apiKey+'/pendo.js';
     z=e.getElementsByTagName(n)[0];z.parentNode.insertBefore(y,z);})(window,document,'script','pendo');
-})(${JSON.stringify(import.meta.env.VITE_PENDO_API_KEY || "011740f6-9f4d-4c4d-8b2c-771e834da6d5")});`,
+})("6a0fbf10-dd8a-43da-98ae-6181c382314c");`,
           }}
         />
 
