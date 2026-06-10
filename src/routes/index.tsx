@@ -206,7 +206,15 @@ function LandingPage() {
           font-size: 11px;
           padding: 6px 12px;
           border-radius: 4px;
+          display: inline-flex;
+          align-items: center;
+          gap: 6px;
         }
+        .platform-badge svg {
+          display: inline-flex;
+          vertical-align: middle;
+        }
+
         .cta-row {
           display: flex;
           flex-wrap: wrap;
