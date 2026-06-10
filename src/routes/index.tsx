@@ -2,7 +2,6 @@ import { createFileRoute, Link, redirect } from "@tanstack/react-router";
 import { useState, type CSSProperties } from "react";
 import { supabase } from "@/integrations/supabase/client";
 
-
 export const Route = createFileRoute("/")({
   beforeLoad: async () => {
     const { data } = await supabase.auth.getUser();
@@ -161,20 +160,35 @@ function LandingPage() {
           width: 100%;
           height: 100%;
           min-height: 100vh;
-          background-color: #050508;
-          background-image:
-            linear-gradient(#1E1E28 1px, transparent 1px),
-            linear-gradient(90deg, #1E1E28 1px, transparent 1px);
-          background-size: 48px 48px;
+          background: #050508;
         }
-        ::-webkit-scrollbar { display: none; }
-        html, body { scrollbar-width: none; -ms-overflow-style: none; }
+        .hero-video {
+          position: absolute;
+          inset: 0;
+          width: 100%;
+          height: 100%;
+          object-fit: cover;
+          object-position: center center;
+          z-index: 0;
+        }
+        .hero-overlay {
+          position: absolute;
+          inset: 0;
+          background: linear-gradient(
+            to right,
+            rgba(5, 5, 8, 0.92) 0%,
+            rgba(5, 5, 8, 0.75) 45%,
+            rgba(5, 5, 8, 0.2) 100%
+          );
+          z-index: 1;
+          pointer-events: none;
+        }
         .hero-content {
           position: relative;
           z-index: 2;
           padding-left: clamp(40px, 8vw, 120px);
-          padding-top: 28vh;
-          max-width: 560px;
+          padding-top: 30vh;
+          max-width: 600px;
           display: flex;
           flex-direction: column;
           gap: 20px;
@@ -436,9 +450,6 @@ function LandingPage() {
             padding: 120px 24px 80px;
             max-width: none;
           }
-          .hero-content {
-            padding: 120px 24px 60px;
-          }
           .hero-headline {
             font-size: clamp(64px, 16vw, 96px);
           }
@@ -491,7 +502,6 @@ function LandingPage() {
       <div className="card-stack">
         <section className="sticky-card sticky-card-1 hero-section">
 
-
           <div className="hero-content">
             <p
               style={{
@@ -524,17 +534,6 @@ function LandingPage() {
                 SEE HOW IT WORKS ↓
               </a>
             </div>
-            <p
-              style={{
-                ...mono,
-                fontSize: 10,
-                color: "#4A4A5A",
-                letterSpacing: "0.14em",
-                margin: 0,
-              }}
-            >
-              // THREE PLATFORMS. ONE TRANSMISSION.
-            </p>
           </div>
           <div className="scroll-hint">
             <p className="scroll-hint-text">SCROLL</p>
