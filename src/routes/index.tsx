@@ -1,8 +1,6 @@
 import { createFileRoute, Link, redirect } from "@tanstack/react-router";
-import { useState, type CSSProperties, type SyntheticEvent } from "react";
+import { useState, type CSSProperties } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import diagramAsset from "@/assets/relay-howitworks.png.asset.json";
-import videoAsset from "@/assets/relay-hero.mp4.asset.json";
 
 export const Route = createFileRoute("/")({
   beforeLoad: async () => {
