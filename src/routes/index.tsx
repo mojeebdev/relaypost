@@ -555,12 +555,7 @@ function LandingPage() {
             >
               // HOW IT WORKS
             </p>
-            <img
-              className="how-diagram"
-              src={diagramSrc}
-              alt="How RELAY works"
-              onError={handleDiagramError}
-            />
+
             <div className="steps-grid">
               {STEPS.map((s) => (
                 <div key={s.n}>
