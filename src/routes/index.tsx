@@ -1,6 +1,7 @@
 import { createFileRoute, Link, redirect } from "@tanstack/react-router";
 import { useState, type CSSProperties } from "react";
 import { supabase } from "@/integrations/supabase/client";
+import heroVideoAsset from "@/assets/relay-hero.mp4.asset.json";
 
 export const Route = createFileRoute("/")({
   beforeLoad: async () => {
@@ -450,8 +451,21 @@ function LandingPage() {
             padding: 120px 24px 80px;
             max-width: none;
           }
+          .hero-content {
+            padding: 120px 24px 60px;
+          }
           .hero-headline {
             font-size: clamp(64px, 16vw, 96px);
+          }
+          .hero-video {
+            object-position: center center;
+          }
+          .hero-overlay {
+            background: linear-gradient(
+              to right,
+              rgba(5, 5, 8, 0.97) 0%,
+              rgba(5, 5, 8, 0.85) 100%
+            );
           }
           .how-inner {
             padding: 80px 24px;
@@ -501,6 +515,17 @@ function LandingPage() {
 
       <div className="card-stack">
         <section className="sticky-card sticky-card-1 hero-section">
+          <video
+            className="hero-video"
+            autoPlay
+            loop
+            muted
+            playsInline
+            preload="auto"
+          >
+            <source src={heroVideoAsset.url} type="video/mp4" />
+          </video>
+          <div className="hero-overlay" aria-hidden="true" />
 
           <div className="hero-content">
             <p
@@ -534,6 +559,17 @@ function LandingPage() {
                 SEE HOW IT WORKS ↓
               </a>
             </div>
+            <p
+              style={{
+                ...mono,
+                fontSize: 10,
+                color: "#4A4A5A",
+                letterSpacing: "0.14em",
+                margin: 0,
+              }}
+            >
+              // THREE PLATFORMS. ONE TRANSMISSION.
+            </p>
           </div>
           <div className="scroll-hint">
             <p className="scroll-hint-text">SCROLL</p>
