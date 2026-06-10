@@ -511,8 +511,8 @@ function DashboardPage() {
 
                     <footer className="flex gap-2">
                       <button
-                        onClick={() => updateStatus(p.key, "skipped")}
-                        disabled={status === "published"}
+                        onClick={() => regenerate(p.key)}
+                        disabled={status === "published" || regeneratingPlatform !== null}
                         style={{
                           flex: 1,
                           background: "transparent",
@@ -524,11 +524,11 @@ function DashboardPage() {
                           textTransform: "uppercase",
                           padding: "10px",
                           borderRadius: 6,
-                          cursor: status === "published" ? "not-allowed" : "pointer",
-                          opacity: status === "published" ? 0.4 : 1,
+                          cursor: status === "published" || regeneratingPlatform !== null ? "not-allowed" : "pointer",
+                          opacity: status === "published" || regeneratingPlatform !== null ? 0.4 : 1,
                         }}
                       >
-                        SKIP
+                        {regeneratingPlatform === p.key ? "REGENERATING..." : "REGENERATE"}
                       </button>
                       <button
                         onClick={() => updateStatus(p.key, "approved")}
