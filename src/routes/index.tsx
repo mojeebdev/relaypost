@@ -115,12 +115,12 @@ function LandingPage() {
         .hero-video-wrap { width: 100%; height: 100%; min-height: 520px; border-radius: 12px; border: 0.5px solid var(--void-05); overflow: hidden; position: relative; z-index: 1; }
         .hero-video-wrap video { width: 100%; height: 100%; object-fit: cover; object-position: right center; display: block; background: var(--void-01); }
 
-        .btn-primary-cta { background: var(--accent); color: #000; font-family: var(--font-display); font-weight: 500; font-size: 12px; letter-spacing: 0.1em; text-transform: uppercase; padding: 13px 26px; border-radius: 6px; border: none; cursor: pointer; text-decoration: none; display: inline-block; transition: opacity .15s, transform .15s; }
+        .btn-primary-cta { background: #00FF9D; color: #000000; font-family: var(--font-display); font-weight: 500; font-size: 12px; letter-spacing: 0.1em; text-transform: uppercase; padding: 13px 26px; border-radius: 6px; border: none; cursor: pointer; text-decoration: none; display: inline-block; transition: opacity .15s, transform .15s; }
         .btn-primary-cta:hover { opacity: .88; transform: translateY(-1px); }
-        .btn-ghost-cta { background: transparent; border: 0.5px solid var(--void-05); color: var(--ink-secondary); font-family: var(--font-accent); font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; padding: 13px 26px; border-radius: 6px; cursor: pointer; text-decoration: none; display: inline-block; transition: border-color .15s, color .15s; }
+        .btn-ghost-cta { background: transparent; border: 0.5px solid var(--void-05); color: #8A8A9A; font-family: var(--font-accent); font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; padding: 13px 26px; border-radius: 6px; cursor: pointer; text-decoration: none; display: inline-block; transition: border-color .15s, color .15s; }
         .btn-ghost-cta:hover { border-color: var(--accent-border); color: var(--ink-primary); }
 
-        .platform-badge { background: var(--accent-dim); border: 0.5px solid var(--accent-border); color: var(--accent); font-family: var(--font-accent); font-size: 11px; letter-spacing: 0.08em; padding: 6px 12px; border-radius: 4px; }
+        .platform-badge { background: rgba(0,255,157,0.08); border: 0.5px solid rgba(0,255,157,0.25); color: #00FF9D; font-family: var(--font-accent); font-size: 11px; letter-spacing: 0.08em; padding: 6px 12px; border-radius: 4px; }
 
         .steps-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 32px; }
 
