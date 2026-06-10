@@ -134,10 +134,12 @@ function DashboardPage() {
   const generate = useServerFn(generateVersions);
   const listFn = useServerFn(listPosts);
   const getFn = useServerFn(getPost);
+  const regenerateFn = useServerFn(regeneratePlatform);
 
   const [xPost, setXPost] = useState("");
   const [activePost, setActivePost] = useState<Post | null>(null);
   const [stageIdx, setStageIdx] = useState(0);
+  const [regeneratingPlatform, setRegeneratingPlatform] = useState<Platform | null>(null);
 
   const historyQuery = useQuery({
     queryKey: ["posts"],
