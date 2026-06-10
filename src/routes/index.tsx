@@ -238,7 +238,7 @@ function Hero() {
           style={{
             background: "transparent",
             border: "0.5px solid rgba(240,240,248,0.12)",
-            color: "rgba(240,240,248,0.45)",
+            color: "#4A4A5A",
             fontFamily: "IBM Plex Mono, monospace",
             fontSize: 11,
             letterSpacing: "0.1em",
