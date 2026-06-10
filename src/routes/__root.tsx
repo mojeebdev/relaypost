@@ -11,6 +11,7 @@ import { useEffect, useRef } from "react";
 
 import { Toaster } from "@/components/ui/sonner";
 import { supabase } from "@/integrations/supabase/client";
+import { getAnonVisitorId } from "@/lib/anon-id";
 import appCss from "../styles.css?url";
 
 function NotFoundComponent() {
