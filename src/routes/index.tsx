@@ -1,7 +1,7 @@
 import { createFileRoute, Link, redirect } from "@tanstack/react-router";
 import { useState, type CSSProperties } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import diagramAsset from "@/assets/relay-howitworks.png.asset.json";
+import diagramAsset from "@/assets/relay-howitworks-2.png.asset.json";
 import videoAsset from "@/assets/relay-hero.mp4.asset.json";
 
 export const Route = createFileRoute("/")({
@@ -110,17 +110,17 @@ function LandingPage() {
         .relay-signin { font-family: var(--font-accent); font-size: 11px; color: var(--ink-tertiary); letter-spacing: 0.08em; text-decoration: none; transition: color .15s; }
         .relay-signin:hover { color: var(--ink-primary); }
 
-        .hero-grid { display: grid; grid-template-columns: 1fr 52%; align-items: center; max-width: 1280px; margin: 0 auto; padding: 0 clamp(24px, 6vw, 80px); min-height: 100vh; padding-top: 64px; gap: 48px; }
-        .hero-video-wrap { width: 100%; height: 100%; min-height: 520px; border-radius: 16px 0 0 16px; overflow: hidden; position: relative; }
-        .hero-video-wrap video { width: 100%; height: 100%; object-fit: cover; display: block; }
-        .hero-video-overlay { position: absolute; left: 0; top: 0; width: 80px; height: 100%; background: linear-gradient(90deg, var(--void-01), transparent); pointer-events: none; }
+        .hero-grid { display: grid; grid-template-columns: 1fr 52%; align-items: center; max-width: 1280px; margin: 0 auto; padding: 0 clamp(24px, 6vw, 80px); min-height: 100vh; padding-top: 64px; gap: 48px; position: relative; z-index: 1; }
+        .hero-left { position: relative; z-index: 2; display: flex; flex-direction: column; gap: 20px; }
+        .hero-video-wrap { width: 100%; height: 100%; min-height: 520px; border-radius: 12px; border: 0.5px solid var(--void-05); overflow: hidden; position: relative; z-index: 1; }
+        .hero-video-wrap video { width: 100%; height: 100%; object-fit: cover; object-position: right center; display: block; background: var(--void-01); }
 
-        .btn-primary-cta { background: var(--accent); color: #000; font-family: var(--font-display); font-weight: 500; font-size: 12px; letter-spacing: 0.1em; text-transform: uppercase; padding: 13px 26px; border-radius: 6px; border: none; cursor: pointer; text-decoration: none; display: inline-block; transition: opacity .15s, transform .15s; }
+        .btn-primary-cta { background: #00FF9D; color: #000000; font-family: var(--font-display); font-weight: 500; font-size: 12px; letter-spacing: 0.1em; text-transform: uppercase; padding: 13px 26px; border-radius: 6px; border: none; cursor: pointer; text-decoration: none; display: inline-block; transition: opacity .15s, transform .15s; }
         .btn-primary-cta:hover { opacity: .88; transform: translateY(-1px); }
-        .btn-ghost-cta { background: transparent; border: 0.5px solid var(--void-05); color: var(--ink-secondary); font-family: var(--font-accent); font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; padding: 13px 26px; border-radius: 6px; cursor: pointer; text-decoration: none; display: inline-block; transition: border-color .15s, color .15s; }
+        .btn-ghost-cta { background: transparent; border: 0.5px solid var(--void-05); color: #8A8A9A; font-family: var(--font-accent); font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; padding: 13px 26px; border-radius: 6px; cursor: pointer; text-decoration: none; display: inline-block; transition: border-color .15s, color .15s; }
         .btn-ghost-cta:hover { border-color: var(--accent-border); color: var(--ink-primary); }
 
-        .platform-badge { background: var(--accent-dim); border: 0.5px solid var(--accent-border); color: var(--accent); font-family: var(--font-accent); font-size: 11px; letter-spacing: 0.08em; padding: 6px 12px; border-radius: 4px; }
+        .platform-badge { background: rgba(0,255,157,0.08); border: 0.5px solid rgba(0,255,157,0.25); color: #00FF9D; font-family: var(--font-accent); font-size: 11px; letter-spacing: 0.08em; padding: 6px 12px; border-radius: 4px; }
 
         .steps-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 32px; }
 
@@ -162,15 +162,15 @@ function LandingPage() {
 
       {/* HERO */}
       <section className="hero-grid">
-        <div style={{ display: "flex", flexDirection: "column", gap: 20 }}>
+        <div className="hero-left">
           <p style={eyebrowAccent}>X-FIRST CONTENT DISTRIBUTION</p>
           <h1
             className="hero-headline"
-            style={{ ...display, fontWeight: 500, fontSize: "clamp(72px, 11vw, 140px)", color: "var(--ink-primary)", letterSpacing: "0.05em", lineHeight: 0.88, margin: 0 }}
+            style={{ ...display, fontWeight: 500, fontSize: "clamp(72px, 11vw, 140px)", color: "#F5F5F7", letterSpacing: "0.05em", lineHeight: 0.88, margin: 0 }}
           >
             RELAY
           </h1>
-          <p style={{ ...body, fontWeight: 300, fontSize: 16, color: "var(--ink-secondary)", lineHeight: 1.7, maxWidth: 360, margin: 0 }}>
+          <p style={{ ...body, fontWeight: 300, fontSize: 16, color: "#8A8A9A", lineHeight: 1.7, maxWidth: 360, margin: 0 }}>
             Write once on X. Distribute everywhere. X stays the source of truth.
           </p>
           <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
@@ -182,7 +182,7 @@ function LandingPage() {
             <Link to="/login" className="btn-primary-cta">START DISTRIBUTING →</Link>
             <a href="#how" className="btn-ghost-cta">SEE HOW IT WORKS ↓</a>
           </div>
-          <p style={{ ...mono, fontSize: 10, color: "var(--ink-tertiary)", letterSpacing: "0.14em", margin: 0 }}>
+          <p style={{ ...mono, fontSize: 10, color: "#4A4A5A", letterSpacing: "0.14em", margin: 0 }}>
             // THREE PLATFORMS. ONE TRANSMISSION.
           </p>
         </div>
@@ -190,7 +190,6 @@ function LandingPage() {
           <video autoPlay loop muted playsInline>
             <source src={videoAsset.url} type="video/mp4" />
           </video>
-          <div className="hero-video-overlay" />
         </div>
       </section>
 
