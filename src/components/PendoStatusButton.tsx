@@ -20,8 +20,10 @@ export function PendoStatusButton() {
       const scriptLoaded = !!document.querySelector(
         'script[src*="cdn.pendo.io/agent/static/"]',
       );
-      // @ts-expect-error pendo is injected globally
-      const pendo = typeof window !== "undefined" ? window.pendo : undefined;
+      const pendo =
+        typeof window !== "undefined"
+          ? (window as unknown as { pendo?: any }).pendo
+          : undefined;
       const windowPendo = !!pendo;
       const initialized =
         windowPendo && typeof pendo.isReady === "function"
