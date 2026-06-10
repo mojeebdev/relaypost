@@ -546,6 +546,17 @@ function LandingPage() {
                 SEE HOW IT WORKS ↓
               </a>
             </div>
+            <p
+              style={{
+                ...mono,
+                fontSize: 10,
+                color: "#4A4A5A",
+                letterSpacing: "0.14em",
+                margin: 0,
+              }}
+            >
+              // THREE PLATFORMS. ONE TRANSMISSION.
+            </p>
           </div>
           <div className="scroll-hint">
             <p className="scroll-hint-text">SCROLL</p>
