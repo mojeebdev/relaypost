@@ -162,15 +162,15 @@ function LandingPage() {
 
       {/* HERO */}
       <section className="hero-grid">
-        <div style={{ display: "flex", flexDirection: "column", gap: 20 }}>
+        <div className="hero-left">
           <p style={eyebrowAccent}>X-FIRST CONTENT DISTRIBUTION</p>
           <h1
             className="hero-headline"
-            style={{ ...display, fontWeight: 500, fontSize: "clamp(72px, 11vw, 140px)", color: "var(--ink-primary)", letterSpacing: "0.05em", lineHeight: 0.88, margin: 0 }}
+            style={{ ...display, fontWeight: 500, fontSize: "clamp(72px, 11vw, 140px)", color: "#F5F5F7", letterSpacing: "0.05em", lineHeight: 0.88, margin: 0 }}
           >
             RELAY
           </h1>
-          <p style={{ ...body, fontWeight: 300, fontSize: 16, color: "var(--ink-secondary)", lineHeight: 1.7, maxWidth: 360, margin: 0 }}>
+          <p style={{ ...body, fontWeight: 300, fontSize: 16, color: "#8A8A9A", lineHeight: 1.7, maxWidth: 360, margin: 0 }}>
             Write once on X. Distribute everywhere. X stays the source of truth.
           </p>
           <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
@@ -182,7 +182,7 @@ function LandingPage() {
             <Link to="/login" className="btn-primary-cta">START DISTRIBUTING →</Link>
             <a href="#how" className="btn-ghost-cta">SEE HOW IT WORKS ↓</a>
           </div>
-          <p style={{ ...mono, fontSize: 10, color: "var(--ink-tertiary)", letterSpacing: "0.14em", margin: 0 }}>
+          <p style={{ ...mono, fontSize: 10, color: "#4A4A5A", letterSpacing: "0.14em", margin: 0 }}>
             // THREE PLATFORMS. ONE TRANSMISSION.
           </p>
         </div>
@@ -190,7 +190,6 @@ function LandingPage() {
           <video autoPlay loop muted playsInline>
             <source src={videoAsset.url} type="video/mp4" />
           </video>
-          <div className="hero-video-overlay" />
         </div>
       </section>
 
