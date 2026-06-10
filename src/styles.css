@@ -51,11 +51,19 @@
 }
 
 @layer base {
-  * { border-color: var(--void-05); }
-  html, body { background-color: var(--void-01); color: var(--ink-primary); }
+  * {
+    box-sizing: border-box;
+    border-color: var(--void-05);
+  }
+  html, body {
+    margin: 0;
+    background-color: var(--void-01);
+    color: var(--ink-primary);
+  }
   body {
     font-family: var(--font-body);
     font-weight: 400;
+    -webkit-font-smoothing: antialiased;
     background-image:
       linear-gradient(var(--void-04) 1px, transparent 1px),
       linear-gradient(90deg, var(--void-04) 1px, transparent 1px);

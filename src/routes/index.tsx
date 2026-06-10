@@ -1,8 +1,6 @@
 import { createFileRoute, Link, redirect } from "@tanstack/react-router";
 import { useState, type CSSProperties } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import diagramAsset from "@/assets/relay-howitworks-2.png.asset.json";
-import videoAsset from "@/assets/relay-hero.mp4.asset.json";
 
 export const Route = createFileRoute("/")({
   beforeLoad: async () => {
@@ -33,47 +31,30 @@ const mono: CSSProperties = { fontFamily: "var(--font-accent)" };
 const display: CSSProperties = { fontFamily: "var(--font-display)" };
 const body: CSSProperties = { fontFamily: "var(--font-body)" };
 
-const eyebrowAccent: CSSProperties = {
-  ...mono,
-  fontSize: 11,
-  color: "var(--accent)",
-  letterSpacing: "0.2em",
-  textTransform: "uppercase",
-  margin: 0,
-};
-const eyebrowDim: CSSProperties = {
-  ...mono,
-  fontSize: 11,
-  color: "var(--ink-tertiary)",
-  letterSpacing: "0.2em",
-  textTransform: "uppercase",
-  margin: 0,
-};
-
 const FAQS = [
   {
-    q: "Does RELAY actually publish to LinkedIn, Medium and Facebook automatically?",
-    a: "Not yet — RELAY is intentionally approval-first. You review and approve each platform version before anything goes live. For LinkedIn, it generates a downloadable PDF document post. For Medium, it copies clean Markdown to your clipboard. For Facebook, it copies the formatted post. One approval click, then you paste or upload. Direct API publishing is on the roadmap.",
+    q: "Does RELAY publish automatically?",
+    a: "Not yet — RELAY is approval-first. LinkedIn gets a downloadable PDF carousel. Medium gets clean Markdown copied to clipboard. Facebook gets a formatted post. You paste or upload after approving. Direct API publishing is on the roadmap.",
   },
   {
-    q: "What makes the LinkedIn version different from just copying my tweet?",
-    a: "RELAY formats it as a LinkedIn carousel script — structured with slide-by-slide content, a hook on slide one, key points expanded across slides, and a CTA closing slide. It then generates that as a PDF document post, which gets significantly higher organic reach on LinkedIn than plain text posts.",
+    q: "What makes LinkedIn different from copying my tweet?",
+    a: "RELAY formats it as a carousel script — hook on slide one, key points expanded across slides, CTA on the closing slide — then exports it as a PDF document post, which gets significantly higher organic reach than plain text on LinkedIn.",
   },
   {
-    q: "What is the attribution line it adds?",
-    a: "Every version automatically appends: 'First published on X — follow @[your handle] for more.' This stamps X as the source of truth for your content and drives cross-platform audience back to where you think out loud.",
+    q: "What is the attribution line?",
+    a: "Every version automatically appends: 'First published on X — follow @[your handle] for more.' X stays the source of truth across all platforms.",
   },
   {
-    q: "Is my content stored anywhere?",
-    a: "Yes — your posts and generated versions are saved to your account in the post history dashboard so you can revisit, re-export, or track what you've distributed. You can delete any post from your history at any time.",
+    q: "Is my content stored?",
+    a: "Yes — posts and generated versions are saved in your history dashboard. You can revisit, re-export, or delete any post at any time.",
   },
   {
     q: "How does the AI Content Reflow work?",
-    a: "When you hit Generate, RELAY fires three parallel calls through Lovable AI Gateway simultaneously — one prompt engineered specifically for LinkedIn slides, one for a Medium essay, one for a Facebook post. Each call understands the platform's native format, tone, and audience. The results arrive together, side by side, ready for your approval.",
+    a: "When you hit Generate, RELAY fires three parallel calls through Lovable AI Gateway — each prompt engineered specifically for its platform's native format, tone, and audience. Results arrive together, ready for approval.",
   },
   {
-    q: "Is RELAY free to use?",
-    a: "RELAY is currently free during the hackathon period. Sign up, connect your account, and start distributing. Pricing will be introduced post-launch with a generous free tier for solo builders.",
+    q: "Is RELAY free?",
+    a: "Free during the hackathon period. Pricing comes post-launch with a generous free tier for solo builders.",
   },
 ];
 
@@ -81,181 +62,664 @@ const STEPS = [
   {
     n: "01",
     title: "Paste your X post",
-    desc: "Drop any post you published on X into the input. Any length, any format.",
+    desc: "Drop any post from X into the input. Any length, any format.",
   },
   {
     n: "02",
     title: "RELAY formats it",
-    desc: "The AI Content Reflow engine fires three parallel calls — one per platform. LinkedIn gets a carousel script, Medium gets an essay, Facebook gets a conversational rewrite. Every version adds your X attribution.",
+    desc: "The AI Content Reflow engine fires three parallel calls — LinkedIn carousel, Medium essay, Facebook post. Every version adds your X attribution.",
   },
   {
     n: "03",
     title: "You approve. It distributes.",
-    desc: "Review each version side by side. Approve what you want. Skip what you don't. Nothing publishes without your sign-off.",
+    desc: "Review each version side by side. Approve what you want. Nothing publishes without your sign-off.",
   },
 ];
 
 function LandingPage() {
   return (
-    <div style={{ ...body, color: "var(--ink-primary)" }}>
+    <div className="landing-page" style={{ ...body, color: "var(--ink-primary)" }}>
       <style>{`
-        @keyframes relay-pulse { 0%,100% { opacity: 1 } 50% { opacity: .3 } }
-        .relay-nav {
-          position: fixed; top: 0; left: 0; right: 0; height: 64px; z-index: 50;
-          background: var(--void-02); border-bottom: 1px solid var(--void-05);
-          display: flex; align-items: center; justify-content: space-between;
+        @keyframes relay-bounce {
+          0%, 100% { transform: translateY(0); opacity: 0.6; }
+          50% { transform: translateY(6px); opacity: 1; }
+        }
+        @keyframes relay-pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
+
+        .landing-nav {
+          position: fixed;
+          top: 0;
+          left: 0;
+          right: 0;
+          height: 64px;
+          z-index: 50;
+          background: rgba(5, 5, 8, 0.85);
+          backdrop-filter: blur(8px);
+          border-bottom: 1px solid var(--void-05);
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
           padding: 0 clamp(24px, 6vw, 80px);
         }
-        .relay-dot { width: 6px; height: 6px; border-radius: 9999px; background: var(--accent); box-shadow: 0 0 10px var(--accent); animation: relay-pulse 1.8s ease-in-out infinite; }
-        .relay-signin { font-family: var(--font-accent); font-size: 11px; color: var(--ink-tertiary); letter-spacing: 0.08em; text-decoration: none; transition: color .15s; }
-        .relay-signin:hover { color: var(--ink-primary); }
-
-        .hero-grid { display: grid; grid-template-columns: 1fr 52%; align-items: center; max-width: 1280px; margin: 0 auto; padding: 0 clamp(24px, 6vw, 80px); min-height: 100vh; padding-top: 64px; gap: 48px; position: relative; z-index: 1; }
-        .hero-left { position: relative; z-index: 2; display: flex; flex-direction: column; gap: 20px; }
-        .hero-video-wrap { width: 100%; height: 100%; min-height: 520px; border-radius: 12px; border: 0.5px solid var(--void-05); overflow: hidden; position: relative; z-index: 1; }
-        .hero-video-wrap video { width: 100%; height: 100%; object-fit: cover; object-position: right center; display: block; background: var(--void-01); }
-
-        .btn-primary-cta { background: #00FF9D; color: #000000; font-family: var(--font-display); font-weight: 500; font-size: 12px; letter-spacing: 0.1em; text-transform: uppercase; padding: 13px 26px; border-radius: 6px; border: none; cursor: pointer; text-decoration: none; display: inline-block; transition: opacity .15s, transform .15s; }
-        .btn-primary-cta:hover { opacity: .88; transform: translateY(-1px); }
-        .btn-ghost-cta { background: transparent; border: 0.5px solid var(--void-05); color: #8A8A9A; font-family: var(--font-accent); font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; padding: 13px 26px; border-radius: 6px; cursor: pointer; text-decoration: none; display: inline-block; transition: border-color .15s, color .15s; }
-        .btn-ghost-cta:hover { border-color: var(--accent-border); color: var(--ink-primary); }
-
-        .platform-badge { background: rgba(0,255,157,0.08); border: 0.5px solid rgba(0,255,157,0.25); color: #00FF9D; font-family: var(--font-accent); font-size: 11px; letter-spacing: 0.08em; padding: 6px 12px; border-radius: 4px; }
-
-        .steps-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 32px; }
-
-        .faq-item { border-bottom: 1px solid var(--void-05); padding: 24px 0; }
-        .faq-q { display: flex; justify-content: space-between; align-items: center; cursor: pointer; gap: 16px; background: none; border: none; padding: 0; width: 100%; text-align: left; color: inherit; }
-        .faq-q-text { font-family: var(--font-display); font-weight: 500; font-size: 17px; color: var(--ink-primary); transition: color .15s; }
-        .faq-q[aria-expanded="true"] .faq-q-text { color: var(--accent); }
-        .faq-toggle { font-family: var(--font-accent); font-size: 20px; color: var(--accent); line-height: 1; }
-        .faq-a-wrap { display: grid; grid-template-rows: 0fr; transition: grid-template-rows .25s ease; }
-        .faq-a-wrap[data-open="true"] { grid-template-rows: 1fr; }
-        .faq-a-inner { overflow: hidden; }
-        .faq-a { font-family: var(--font-body); font-weight: 300; font-size: 15px; color: var(--ink-secondary); line-height: 1.75; padding-top: 16px; max-width: 680px; margin: 0; }
-
-        .footer-row { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px; }
-        .footer-link { font-family: var(--font-accent); font-size: 11px; color: var(--ink-tertiary); letter-spacing: 0.06em; text-decoration: none; transition: color .15s; }
-        .footer-link:hover { color: var(--accent); }
-
-        @media (max-width: 1024px) {
-          .hero-grid { grid-template-columns: 1fr; padding: 100px 24px 60px; min-height: auto; }
-          .hero-video-wrap { order: -1; height: 320px; min-height: 320px; border-radius: 12px; margin-bottom: 40px; }
-          .steps-grid { grid-template-columns: 1fr; gap: 40px; }
+        .landing-dot {
+          width: 6px;
+          height: 6px;
+          border-radius: 9999px;
+          background: var(--accent);
+          box-shadow: 0 0 10px var(--accent);
+          animation: relay-pulse 1.8s ease-in-out infinite;
         }
-        @media (max-width: 640px) {
-          .hero-headline { font-size: clamp(56px, 14vw, 80px) !important; }
-          .footer-row { flex-direction: column; align-items: flex-start; gap: 20px; }
+        .landing-signin {
+          font-family: var(--font-accent);
+          font-size: 11px;
+          color: var(--ink-tertiary);
+          letter-spacing: 0.08em;
+          text-decoration: none;
+          transition: color 0.15s;
+        }
+        .landing-signin:hover { color: var(--ink-primary); }
+
+        .card-stack {
+          height: 400vh;
+        }
+        .sticky-card {
+          position: sticky;
+          top: 0;
+          height: 100vh;
+          overflow: hidden;
+        }
+        .sticky-card-1 { z-index: 1; }
+        .sticky-card-2 { z-index: 2; }
+        .sticky-card-3 { z-index: 3; }
+        .sticky-card-4 {
+          z-index: 4;
+          overflow-y: auto;
+        }
+
+        .hero-section {
+          position: relative;
+          width: 100%;
+          height: 100%;
+        }
+        .hero-video {
+          position: absolute;
+          inset: 0;
+          width: 100%;
+          height: 100%;
+          object-fit: cover;
+          object-position: center center;
+          z-index: 0;
+        }
+        .hero-overlay {
+          position: absolute;
+          inset: 0;
+          background: linear-gradient(
+            to right,
+            rgba(5, 5, 8, 0.92) 0%,
+            rgba(5, 5, 8, 0.75) 45%,
+            rgba(5, 5, 8, 0.2) 100%
+          );
+          z-index: 1;
+        }
+        .hero-content {
+          position: relative;
+          z-index: 2;
+          padding-left: clamp(40px, 8vw, 120px);
+          padding-top: 30vh;
+          max-width: 600px;
+          display: flex;
+          flex-direction: column;
+          gap: 20px;
+        }
+        .hero-headline {
+          font-family: var(--font-display);
+          font-size: clamp(80px, 13vw, 160px);
+          font-weight: 500;
+          color: #F0F0F8;
+          letter-spacing: 0.05em;
+          line-height: 0.85;
+          margin: 0;
+        }
+        .hero-sub {
+          font-family: var(--font-body);
+          font-weight: 300;
+          font-size: 17px;
+          color: rgba(240, 240, 248, 0.7);
+          max-width: 380px;
+          line-height: 1.7;
+          margin: 0;
+        }
+        .platform-badges {
+          display: flex;
+          flex-wrap: wrap;
+          gap: 8px;
+        }
+        .platform-badge {
+          background: rgba(0, 255, 157, 0.08);
+          border: 0.5px solid rgba(0, 255, 157, 0.3);
+          color: #00FF9D;
+          font-family: var(--font-accent);
+          font-size: 11px;
+          padding: 6px 12px;
+          border-radius: 4px;
+        }
+        .cta-row {
+          display: flex;
+          flex-wrap: wrap;
+          gap: 12px;
+          margin-top: 8px;
+        }
+        .btn-primary {
+          background: #00FF9D;
+          color: #000;
+          font-family: var(--font-accent);
+          font-weight: 500;
+          font-size: 11px;
+          text-transform: uppercase;
+          letter-spacing: 0.1em;
+          padding: 13px 26px;
+          border-radius: 6px;
+          border: none;
+          cursor: pointer;
+          text-decoration: none;
+          display: inline-block;
+          transition: opacity 0.15s;
+        }
+        .btn-primary:hover { opacity: 0.88; }
+        .btn-ghost {
+          background: transparent;
+          border: 0.5px solid rgba(240, 240, 248, 0.15);
+          color: rgba(240, 240, 248, 0.5);
+          font-family: var(--font-accent);
+          font-size: 11px;
+          text-transform: uppercase;
+          letter-spacing: 0.1em;
+          padding: 13px 26px;
+          border-radius: 6px;
+          cursor: pointer;
+          text-decoration: none;
+          display: inline-block;
+          transition: border-color 0.15s, color 0.15s;
+        }
+        .btn-ghost:hover {
+          border-color: rgba(240, 240, 248, 0.3);
+          color: rgba(240, 240, 248, 0.8);
+        }
+        .scroll-hint {
+          position: absolute;
+          bottom: 32px;
+          left: 50%;
+          transform: translateX(-50%);
+          z-index: 2;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          gap: 8px;
+        }
+        .scroll-hint-text {
+          font-family: var(--font-accent);
+          font-size: 10px;
+          color: #4A4A5A;
+          letter-spacing: 0.2em;
+          text-transform: uppercase;
+          margin: 0;
+        }
+        .scroll-hint-arrow {
+          width: 10px;
+          height: 10px;
+          border-right: 1.5px solid #4A4A5A;
+          border-bottom: 1.5px solid #4A4A5A;
+          transform: rotate(45deg);
+          animation: relay-bounce 2s ease-in-out infinite;
+        }
+
+        .how-section {
+          background: #050508;
+          background-image:
+            linear-gradient(#1E1E28 1px, transparent 1px),
+            linear-gradient(90deg, #1E1E28 1px, transparent 1px);
+          background-size: 48px 48px;
+        }
+        .how-inner {
+          max-width: 1100px;
+          margin: 0 auto;
+          padding: 80px clamp(24px, 6vw, 80px);
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          gap: 48px;
+          height: 100%;
+          overflow-y: auto;
+        }
+        .how-diagram {
+          width: 100%;
+          max-width: 820px;
+          border-radius: 12px;
+          border: 0.5px solid #2C2C3A;
+          display: block;
+        }
+        .steps-grid {
+          display: grid;
+          grid-template-columns: repeat(3, 1fr);
+          gap: 32px;
+          max-width: 900px;
+          width: 100%;
+        }
+
+        .origin-section {
+          background: #0C0C12;
+          border-top: 1px solid #2C2C3A;
+        }
+        .origin-inner {
+          max-width: 800px;
+          margin: 0 auto;
+          padding: 0 clamp(24px, 6vw, 80px);
+          height: 100%;
+          display: flex;
+          flex-direction: column;
+          justify-content: center;
+        }
+        .origin-headline {
+          font-family: var(--font-display);
+          font-weight: 500;
+          font-size: clamp(40px, 6vw, 72px);
+          color: #F0F0F8;
+          line-height: 1.05;
+          margin: 0 0 40px;
+        }
+        .origin-paragraphs {
+          display: flex;
+          flex-direction: column;
+          gap: 20px;
+          max-width: 680px;
+        }
+        .origin-p {
+          font-family: var(--font-body);
+          font-weight: 300;
+          font-size: 16px;
+          color: #8A8A9A;
+          line-height: 1.85;
+          margin: 0;
+        }
+
+        .faq-section {
+          background: #050508;
+          border-top: 1px solid #2C2C3A;
+        }
+        .faq-inner {
+          max-width: 800px;
+          margin: 0 auto;
+          padding: 80px clamp(24px, 6vw, 80px);
+        }
+        .faq-item {
+          border-bottom: 1px solid #2C2C3A;
+          padding: 22px 0;
+        }
+        .faq-q {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          cursor: pointer;
+          gap: 16px;
+          background: none;
+          border: none;
+          padding: 0;
+          width: 100%;
+          text-align: left;
+        }
+        .faq-toggle {
+          font-family: var(--font-accent);
+          font-size: 20px;
+          color: #00FF9D;
+          line-height: 1;
+          flex-shrink: 0;
+        }
+        .faq-a {
+          font-family: var(--font-body);
+          font-weight: 300;
+          font-size: 15px;
+          color: #8A8A9A;
+          line-height: 1.75;
+          padding-top: 14px;
+          max-width: 680px;
+          margin: 0;
+        }
+
+        .landing-footer {
+          border-top: 1px solid #2C2C3A;
+          background: #0C0C12;
+          padding: 40px clamp(24px, 6vw, 80px);
+        }
+        .footer-row {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          flex-wrap: wrap;
+          gap: 16px;
+        }
+        .footer-links {
+          display: flex;
+          gap: 20px;
+          flex-wrap: wrap;
+        }
+        .footer-link {
+          font-family: var(--font-accent);
+          font-size: 11px;
+          color: #4A4A5A;
+          text-decoration: none;
+          transition: color 0.15s;
+        }
+        .footer-link:hover { color: #00FF9D; }
+
+        @media (max-width: 767px) {
+          .card-stack { height: auto; }
+          .sticky-card {
+            position: relative;
+            height: auto;
+            overflow: visible;
+          }
+          .sticky-card-1 { min-height: 100vh; }
+          .sticky-card-4 { overflow-y: visible; }
+          .hero-content {
+            padding: 120px 24px 60px;
+            max-width: none;
+          }
+          .hero-headline {
+            font-size: clamp(64px, 16vw, 96px);
+          }
+          .how-inner {
+            padding: 80px 24px;
+          }
+          .steps-grid {
+            grid-template-columns: 1fr;
+          }
+          .origin-inner {
+            padding: 80px 24px;
+          }
+          .faq-inner {
+            padding: 80px 24px;
+            max-width: none;
+            width: 100%;
+          }
+          .footer-row {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 20px;
+          }
         }
       `}</style>
 
-      {/* NAV */}
-      <nav className="relay-nav">
+      <nav className="landing-nav">
         <div style={{ display: "flex", alignItems: "center" }}>
-          <span className="relay-dot" />
-          <span style={{ ...display, fontWeight: 500, fontSize: 18, color: "var(--ink-primary)", letterSpacing: "0.08em", marginLeft: 10 }}>
+          <span className="landing-dot" />
+          <span
+            style={{
+              ...display,
+              fontWeight: 500,
+              fontSize: 18,
+              color: "var(--ink-primary)",
+              letterSpacing: "0.08em",
+              marginLeft: 10,
+            }}
+          >
             RELAY
           </span>
         </div>
-        <Link to="/login" className="relay-signin">Sign in →</Link>
+        <Link to="/login" className="landing-signin">
+          Sign in →
+        </Link>
       </nav>
 
-      {/* HERO */}
-      <section className="hero-grid">
-        <div className="hero-left">
-          <p style={eyebrowAccent}>X-FIRST CONTENT DISTRIBUTION</p>
-          <h1
-            className="hero-headline"
-            style={{ ...display, fontWeight: 500, fontSize: "clamp(72px, 11vw, 140px)", color: "#F5F5F7", letterSpacing: "0.05em", lineHeight: 0.88, margin: 0 }}
-          >
-            RELAY
-          </h1>
-          <p style={{ ...body, fontWeight: 300, fontSize: 16, color: "#8A8A9A", lineHeight: 1.7, maxWidth: 360, margin: 0 }}>
-            Write once on X. Distribute everywhere. X stays the source of truth.
-          </p>
-          <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
-            <span className="platform-badge">LinkedIn PDF</span>
-            <span className="platform-badge">Medium MD</span>
-            <span className="platform-badge">Facebook</span>
-          </div>
-          <div style={{ display: "flex", gap: 12, flexWrap: "wrap" }}>
-            <Link to="/login" className="btn-primary-cta">START DISTRIBUTING →</Link>
-            <a href="#how" className="btn-ghost-cta">SEE HOW IT WORKS ↓</a>
-          </div>
-          <p style={{ ...mono, fontSize: 10, color: "#4A4A5A", letterSpacing: "0.14em", margin: 0 }}>
-            // THREE PLATFORMS. ONE TRANSMISSION.
-          </p>
-        </div>
-        <div className="hero-video-wrap">
-          <video autoPlay loop muted playsInline>
-            <source src={videoAsset.url} type="video/mp4" />
+      <div className="card-stack">
+        {/* SECTION 1 — HERO */}
+        <section className="sticky-card sticky-card-1 hero-section">
+          <video className="hero-video" autoPlay loop muted playsInline>
+            <source src="/videos/relay-hero.mp4" type="video/mp4" />
           </video>
-        </div>
-      </section>
-
-      {/* HOW IT WORKS */}
-      <section id="how" style={{ padding: "clamp(80px, 10vw, 140px) clamp(24px, 6vw, 80px)", maxWidth: 1100, margin: "0 auto" }}>
-        <p style={{ ...eyebrowDim, textAlign: "center", marginBottom: 56 }}>// HOW IT WORKS</p>
-        <img
-          src={diagramAsset.url}
-          alt="RELAY how it works diagram"
-          style={{ width: "100%", maxWidth: 900, display: "block", margin: "0 auto 64px", borderRadius: 12, border: "0.5px solid var(--void-05)" }}
-        />
-        <div className="steps-grid">
-          {STEPS.map((s) => (
-            <div key={s.n}>
-              <div style={{ ...mono, fontSize: 11, color: "var(--accent)", letterSpacing: "0.14em", marginBottom: 12 }}>{s.n}</div>
-              <div style={{ width: 2, height: 24, background: "var(--accent)", marginBottom: 12 }} />
-              <h3 style={{ ...display, fontSize: 20, fontWeight: 500, color: "var(--ink-primary)", marginBottom: 8, marginTop: 0 }}>{s.title}</h3>
-              <p style={{ ...body, fontWeight: 300, fontSize: 14, color: "var(--ink-secondary)", lineHeight: 1.7, margin: 0 }}>{s.desc}</p>
+          <div className="hero-overlay" />
+          <div className="hero-content">
+            <p
+              style={{
+                ...mono,
+                fontSize: 11,
+                color: "#00FF9D",
+                letterSpacing: "0.2em",
+                textTransform: "uppercase",
+                margin: 0,
+              }}
+            >
+              X-FIRST CONTENT DISTRIBUTION
+            </p>
+            <h1 className="hero-headline">RELAY</h1>
+            <p className="hero-sub">
+              Write once on X. Distribute everywhere.
+              <br />
+              X stays the source of truth.
+            </p>
+            <div className="platform-badges">
+              <span className="platform-badge">LinkedIn PDF</span>
+              <span className="platform-badge">Medium MD</span>
+              <span className="platform-badge">Facebook</span>
             </div>
-          ))}
-        </div>
-      </section>
+            <div className="cta-row">
+              <Link to="/login" className="btn-primary">
+                START DISTRIBUTING →
+              </Link>
+              <a href="#how" className="btn-ghost">
+                SEE HOW IT WORKS ↓
+              </a>
+            </div>
+          </div>
+          <div className="scroll-hint">
+            <p className="scroll-hint-text">SCROLL</p>
+            <span className="scroll-hint-arrow" aria-hidden="true" />
+          </div>
+        </section>
 
-      {/* ORIGIN STORY */}
-      <section style={{ background: "var(--void-02)", borderTop: "1px solid var(--void-05)", borderBottom: "1px solid var(--void-05)", padding: "clamp(80px, 10vw, 140px) clamp(24px, 6vw, 80px)" }}>
-        <div style={{ maxWidth: 800, margin: "0 auto" }}>
-          <p style={{ ...eyebrowAccent, marginBottom: 32 }}>// WHY RELAY EXISTS</p>
-          <h2 style={{ ...display, fontWeight: 500, fontSize: "clamp(36px, 5vw, 56px)", color: "var(--ink-primary)", lineHeight: 1.1, marginBottom: 40, marginTop: 0 }}>
-            Your X posts deserve<br />a wider audience.
-          </h2>
-          <div style={{ maxWidth: 680 }}>
-            <p style={{ ...body, fontWeight: 300, fontSize: 16, color: "var(--ink-secondary)", lineHeight: 1.85, margin: 0 }}>
-              Every builder, creator, and thinker who posts on X faces the same silent tax: the content dies there. LinkedIn has a different audience. Medium wants an essay. Facebook needs a different tone.
+        {/* SECTION 2 — HOW IT WORKS */}
+        <section id="how" className="sticky-card sticky-card-2 how-section">
+          <div className="how-inner">
+            <p
+              style={{
+                ...mono,
+                fontSize: 11,
+                color: "#4A4A5A",
+                letterSpacing: "0.2em",
+                textTransform: "uppercase",
+                margin: 0,
+              }}
+            >
+              // HOW IT WORKS
             </p>
-            <p style={{ ...body, fontWeight: 300, fontSize: 16, color: "var(--ink-secondary)", lineHeight: 1.85, marginTop: 20, marginBottom: 0 }}>
-              Reformatting manually for three platforms after already writing the post is friction nobody wants to pay — so most people don't. The content stays on X. The reach stays small.
+            <img
+              className="how-diagram"
+              src="/images/relay-howitworks.png"
+              alt="How RELAY works"
+            />
+            <div className="steps-grid">
+              {STEPS.map((s) => (
+                <div key={s.n}>
+                  <div
+                    style={{
+                      ...mono,
+                      fontSize: 11,
+                      color: "#00FF9D",
+                      letterSpacing: "0.14em",
+                      marginBottom: 10,
+                    }}
+                  >
+                    {s.n}
+                  </div>
+                  <div
+                    style={{
+                      width: 2,
+                      height: 24,
+                      background: "#00FF9D",
+                      marginBottom: 10,
+                    }}
+                  />
+                  <h3
+                    style={{
+                      ...display,
+                      fontSize: 20,
+                      fontWeight: 500,
+                      color: "#F0F0F8",
+                      marginBottom: 8,
+                      marginTop: 0,
+                    }}
+                  >
+                    {s.title}
+                  </h3>
+                  <p
+                    style={{
+                      ...body,
+                      fontWeight: 300,
+                      fontSize: 14,
+                      color: "#8A8A9A",
+                      lineHeight: 1.7,
+                      margin: 0,
+                    }}
+                  >
+                    {s.desc}
+                  </p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* SECTION 3 — ORIGIN STORY */}
+        <section className="sticky-card sticky-card-3 origin-section">
+          <div className="origin-inner">
+            <p
+              style={{
+                ...mono,
+                fontSize: 11,
+                color: "#00FF9D",
+                letterSpacing: "0.2em",
+                textTransform: "uppercase",
+                marginBottom: 32,
+              }}
+            >
+              // WHY RELAY EXISTS
             </p>
-            <p style={{ ...body, fontWeight: 300, fontSize: 16, color: "var(--ink-secondary)", lineHeight: 1.85, marginTop: 20, marginBottom: 0 }}>
-              RELAY fixes the last mile. One post. Three platforms. X stays the source of truth. Built by a solo founder in Lagos who was tired of paying the tax.
+            <h2 className="origin-headline">
+              Your X posts deserve
+              <br />
+              a wider audience.
+            </h2>
+            <div className="origin-paragraphs">
+              <p className="origin-p">
+                Every builder, creator, and thinker who posts on X faces the same silent tax: the
+                content dies there. LinkedIn has a different audience. Medium wants an essay.
+                Facebook needs a different tone.
+              </p>
+              <p className="origin-p">
+                Reformatting manually for three platforms after already writing the post is friction
+                nobody wants to pay — so most people don't. The content stays on X. The reach stays
+                small.
+              </p>
+              <p className="origin-p">
+                RELAY fixes the last mile. One post. Three platforms. X stays the source of truth.
+                Built by a solo founder in Lagos who was tired of paying the tax.
+              </p>
+            </div>
+            <p
+              style={{
+                ...mono,
+                fontSize: 11,
+                color: "#4A4A5A",
+                letterSpacing: "0.1em",
+                marginTop: 40,
+                marginBottom: 0,
+              }}
+            >
+              Built during Mind the Product World Product Day Hackathon 2026.
             </p>
           </div>
-          <p style={{ ...mono, fontSize: 11, color: "var(--ink-tertiary)", letterSpacing: "0.1em", marginTop: 40, marginBottom: 0 }}>
-            Built during Mind the Product World Product Day Hackathon 2026.
-          </p>
-        </div>
-      </section>
+        </section>
 
-      {/* FAQ */}
-      <section style={{ padding: "clamp(80px, 10vw, 140px) clamp(24px, 6vw, 80px)", maxWidth: 800, margin: "0 auto" }}>
-        <p style={{ ...eyebrowDim, textAlign: "center", marginBottom: 56 }}>// FREQUENTLY ASKED</p>
-        <FAQList />
-      </section>
+        {/* SECTION 4 — FAQ */}
+        <section className="sticky-card sticky-card-4 faq-section">
+          <div className="faq-inner">
+            <p
+              style={{
+                ...mono,
+                fontSize: 11,
+                color: "#4A4A5A",
+                letterSpacing: "0.2em",
+                textTransform: "uppercase",
+                textAlign: "center",
+                marginBottom: 48,
+              }}
+            >
+              // FREQUENTLY ASKED
+            </p>
+            <FAQList />
+          </div>
+        </section>
+      </div>
 
-      {/* FOOTER */}
-      <footer style={{ borderTop: "1px solid var(--void-05)", padding: "40px clamp(24px, 6vw, 80px)" }}>
+      {/* SECTION 5 — FOOTER */}
+      <footer className="landing-footer">
         <div className="footer-row">
-          <div style={{ display: "flex", alignItems: "center", gap: 24, flexWrap: "wrap" }}>
-            <span style={{ ...display, fontWeight: 500, fontSize: 16, color: "var(--ink-primary)", letterSpacing: "0.08em" }}>RELAY</span>
-            <span style={{ ...mono, fontSize: 11, color: "var(--ink-tertiary)", letterSpacing: "0.06em" }}>Built by @mojeebeth</span>
+          <div style={{ display: "flex", alignItems: "center", flexWrap: "wrap" }}>
+            <span
+              style={{
+                ...display,
+                fontWeight: 500,
+                fontSize: 16,
+                color: "#F0F0F8",
+                letterSpacing: "0.08em",
+              }}
+            >
+              RELAY
+            </span>
+            <span
+              style={{
+                ...mono,
+                fontSize: 11,
+                color: "#4A4A5A",
+                marginLeft: 24,
+              }}
+            >
+              Built by @mojeebeth
+            </span>
           </div>
-          <div style={{ display: "flex", gap: 20, flexWrap: "wrap" }}>
-            <a className="footer-link" href="https://github.com/mojeebdev/relaypost" target="_blank" rel="noopener noreferrer">GitHub</a>
-            <a className="footer-link" href="https://x.com/mojeebeth" target="_blank" rel="noopener noreferrer">X / Twitter</a>
-            <a className="footer-link" href="https://blindspotlab.xyz" target="_blank" rel="noopener noreferrer">BlindspotLab</a>
+          <div className="footer-links">
+            <a
+              className="footer-link"
+              href="https://github.com/mojeebdev/relaypost"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              GitHub
+            </a>
+            <a
+              className="footer-link"
+              href="https://x.com/mojeebeth"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              X / Twitter
+            </a>
+            <a
+              className="footer-link"
+              href="https://blindspotlab.xyz"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              BlindspotLab
+            </a>
           </div>
-          <span style={{ ...mono, fontSize: 10, color: "var(--ink-tertiary)", letterSpacing: "0.06em" }}>
+          <span
+            style={{
+              ...mono,
+              fontSize: 10,
+              color: "#4A4A5A",
+              letterSpacing: "0.06em",
+            }}
+          >
             © 2026 RELAY · World Product Day Hackathon
           </span>
         </div>
@@ -265,7 +729,8 @@ function LandingPage() {
 }
 
 function FAQList() {
-  const [open, setOpen] = useState<number | null>(0);
+  const [open, setOpen] = useState<number | null>(null);
+
   return (
     <div>
       {FAQS.map((item, i) => {
@@ -278,13 +743,27 @@ function FAQList() {
               aria-expanded={isOpen}
               onClick={() => setOpen(isOpen ? null : i)}
             >
-              <span className="faq-q-text">{item.q}</span>
+              <span
+                style={{
+                  ...display,
+                  fontWeight: 500,
+                  fontSize: 17,
+                  color: isOpen ? "#00FF9D" : "#F0F0F8",
+                  transition: "color 0.2s",
+                }}
+              >
+                {item.q}
+              </span>
               <span className="faq-toggle">{isOpen ? "−" : "+"}</span>
             </button>
-            <div className="faq-a-wrap" data-open={isOpen}>
-              <div className="faq-a-inner">
-                <p className="faq-a">{item.a}</p>
-              </div>
+            <div
+              style={{
+                maxHeight: isOpen ? "300px" : "0",
+                overflow: "hidden",
+                transition: "max-height 0.3s ease",
+              }}
+            >
+              <p className="faq-a">{item.a}</p>
             </div>
           </div>
         );
