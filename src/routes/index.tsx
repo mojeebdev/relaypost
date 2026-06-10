@@ -161,38 +161,20 @@ function LandingPage() {
           height: 100%;
           min-height: 100vh;
           background: #050508;
-        }
-        .hero-video {
-          position: absolute;
-          inset: 0;
-          width: 100%;
-          height: 100%;
-          object-fit: cover;
-          object-position: center center;
-          z-index: 0;
-        }
-        .hero-overlay {
-          position: absolute;
-          inset: 0;
-          background: linear-gradient(
-            to right,
-            rgba(5, 5, 8, 0.92) 0%,
-            rgba(5, 5, 8, 0.75) 45%,
-            rgba(5, 5, 8, 0.2) 100%
-          );
-          z-index: 1;
-          pointer-events: none;
+          padding-top: 140px;
+          padding-bottom: 80px;
+          box-sizing: border-box;
         }
         .hero-content {
           position: relative;
           z-index: 2;
           padding-left: clamp(40px, 8vw, 120px);
-          padding-top: 30vh;
           max-width: 600px;
           display: flex;
           flex-direction: column;
           gap: 20px;
         }
+
         .hero-headline {
           font-family: var(--font-display);
           font-size: clamp(80px, 13vw, 160px);
