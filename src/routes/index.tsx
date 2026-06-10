@@ -134,9 +134,11 @@ function Hero() {
         textAlign: "center",
         padding: "120px 24px 80px",
         gap: 24,
+        position: "relative",
+        zIndex: 1,
       }}
     >
-      <span style={PILL_ACCENT_SOFT}>X-FIRST CONTENT DISTRIBUTION</span>
+      <span style={{ ...PILL_ACCENT_SOFT, position: "relative", zIndex: 1 }}>X-FIRST CONTENT DISTRIBUTION</span>
 
       <h1
         style={{
@@ -147,6 +149,8 @@ function Hero() {
           letterSpacing: "0.05em",
           lineHeight: 0.88,
           margin: 0,
+          position: "relative",
+          zIndex: 1,
         }}
       >
         RELAY
@@ -157,10 +161,12 @@ function Hero() {
           fontFamily: "IBM Plex Sans, sans-serif",
           fontWeight: 300,
           fontSize: 16,
-          color: "rgba(240,240,248,0.65)",
+          color: "rgba(240,240,248,0.7)",
           lineHeight: 1.7,
           maxWidth: 400,
           margin: 0,
+          position: "relative",
+          zIndex: 1,
         }}
       >
         Write once on X. Distribute everywhere.
@@ -171,7 +177,7 @@ function Hero() {
         style={{
           background: "rgba(0,255,157,0.06)",
           border: "1px solid rgba(0,255,157,0.2)",
-          color: "rgba(0,255,157,0.7)",
+          color: "#00FF9D",
           fontFamily: "IBM Plex Mono, monospace",
           fontSize: 10,
           letterSpacing: "0.18em",
@@ -179,12 +185,14 @@ function Hero() {
           padding: "8px 20px",
           borderRadius: 999,
           display: "inline-block",
+          position: "relative",
+          zIndex: 1,
         }}
       >
         THREE PLATFORMS. ONE TRANSMISSION.
       </span>
 
-      <div style={{ display: "flex", gap: 8, justifyContent: "center", flexWrap: "wrap" }}>
+      <div style={{ display: "flex", gap: 8, justifyContent: "center", flexWrap: "wrap", position: "relative", zIndex: 1 }}>
         {PLATFORMS.map((p) => (
           <span
             key={p.label}
@@ -207,7 +215,7 @@ function Hero() {
         ))}
       </div>
 
-      <div style={{ display: "flex", gap: 12, justifyContent: "center", flexWrap: "wrap" }}>
+      <div style={{ display: "flex", gap: 12, justifyContent: "center", flexWrap: "wrap", position: "relative", zIndex: 1 }}>
         <Link
           to="/login"
           style={{
@@ -232,7 +240,7 @@ function Hero() {
           style={{
             background: "transparent",
             border: "0.5px solid rgba(240,240,248,0.12)",
-            color: "rgba(240,240,248,0.45)",
+            color: "#4A4A5A",
             fontFamily: "IBM Plex Mono, monospace",
             fontSize: 11,
             letterSpacing: "0.1em",
