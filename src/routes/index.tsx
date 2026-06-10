@@ -196,13 +196,37 @@ function LandingPage() {
         .steps-grid {
           display: grid;
           grid-template-columns: repeat(3, 1fr);
-          gap: 32px;
+          gap: 24px;
           max-width: 900px;
           width: 100%;
         }
+        .step-card {
+          background: #0C0C12;
+          border: 0.5px solid #2C2C3A;
+          border-radius: 12px;
+          padding: 32px 28px;
+          display: flex;
+          flex-direction: column;
+          gap: 12px;
+          position: relative;
+          overflow: hidden;
+        }
+        .step-card::before {
+          content: "";
+          position: absolute;
+          top: 0;
+          left: 0;
+          right: 0;
+          height: 1px;
+          background: linear-gradient(to right, transparent, rgba(0,255,157,0.4), transparent);
+        }
 
         .origin-section {
-          background: #0C0C12;
+          background-color: #050508;
+          background-image:
+            linear-gradient(#1E1E28 1px, transparent 1px),
+            linear-gradient(90deg, #1E1E28 1px, transparent 1px);
+          background-size: 48px 48px;
           border-top: 1px solid #2C2C3A;
           border-bottom: 1px solid #2C2C3A;
         }
@@ -448,7 +472,7 @@ function LandingPage() {
 
           <div className="steps-grid">
             {STEPS.map((s) => (
-              <div key={s.n}>
+              <div key={s.n} className="step-card">
                 <div
                   style={{
                     ...mono,
