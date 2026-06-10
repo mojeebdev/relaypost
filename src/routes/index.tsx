@@ -190,7 +190,7 @@ function Hero() {
         THREE PLATFORMS. ONE TRANSMISSION.
       </span>
 
-      <div style={{ display: "flex", gap: 8, justifyContent: "center", flexWrap: "wrap" }}>
+      <div style={{ display: "flex", gap: 8, justifyContent: "center", flexWrap: "wrap", position: "relative", zIndex: 1 }}>
         {PLATFORMS.map((p) => (
           <span
             key={p.label}
