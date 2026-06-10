@@ -31,9 +31,6 @@ const mono: CSSProperties = { fontFamily: "var(--font-accent)" };
 const display: CSSProperties = { fontFamily: "var(--font-display)" };
 const body: CSSProperties = { fontFamily: "var(--font-body)" };
 
-const HERO_VIDEO_PRIMARY = "/videos/relay-hero.mp4";
-const HOW_IMAGE_PRIMARY = "/images/relay-howitworks.png";
-
 const FAQS = [
   {
     q: "Does RELAY publish automatically?",
@@ -80,14 +77,7 @@ const STEPS = [
 ];
 
 function LandingPage() {
-  const [heroSrc, setHeroSrc] = useState(HERO_VIDEO_PRIMARY);
-  const [diagramSrc, setDiagramSrc] = useState(HOW_IMAGE_PRIMARY);
-
-  const handleHeroError = (_e: SyntheticEvent<HTMLVideoElement>) => {
-    setHeroSrc((current) => (current === HERO_VIDEO_PRIMARY ? videoAsset.url : current));
-  };
-
-  const handleDiagramError = (_e: SyntheticEvent<HTMLImageElement>) => {
+  const mono: CSSProperties = { fontFamily: "var(--font-accent)" };
     setDiagramSrc((current) => (current === HOW_IMAGE_PRIMARY ? diagramAsset.url : current));
   };
 
