@@ -1,7 +1,7 @@
 import { createFileRoute, Link, redirect } from "@tanstack/react-router";
 import { useState, type CSSProperties } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import heroVideoAsset from "@/assets/relay-hero.mp4.asset.json";
+
 
 export const Route = createFileRoute("/")({
   beforeLoad: async () => {
@@ -161,31 +161,14 @@ function LandingPage() {
           width: 100%;
           height: 100%;
           min-height: 100vh;
-          background: #050508;
+          background-color: #050508;
+          background-image:
+            linear-gradient(#1E1E28 1px, transparent 1px),
+            linear-gradient(90deg, #1E1E28 1px, transparent 1px);
+          background-size: 48px 48px;
         }
-        .hero-video {
-          position: absolute;
-          inset: 0;
-          width: 100%;
-          height: 100%;
-          object-fit: cover;
-          object-position: center right;
-          z-index: 0;
-        }
-        .hero-overlay {
-          position: absolute;
-          inset: 0;
-          background: linear-gradient(
-            to right,
-            rgba(5, 5, 8, 1.0) 0%,
-            rgba(5, 5, 8, 0.98) 25%,
-            rgba(5, 5, 8, 0.80) 50%,
-            rgba(5, 5, 8, 0.10) 75%,
-            rgba(5, 5, 8, 0.0) 100%
-          );
-          z-index: 1;
-          pointer-events: none;
-        }
+        ::-webkit-scrollbar { display: none; }
+        html, body { scrollbar-width: none; -ms-overflow-style: none; }
         .hero-content {
           position: relative;
           z-index: 2;
@@ -459,16 +442,6 @@ function LandingPage() {
           .hero-headline {
             font-size: clamp(64px, 16vw, 96px);
           }
-          .hero-video {
-            object-position: center center;
-          }
-          .hero-overlay {
-            background: linear-gradient(
-              to right,
-              rgba(5, 5, 8, 0.97) 0%,
-              rgba(5, 5, 8, 0.85) 100%
-            );
-          }
           .how-inner {
             padding: 80px 24px;
             min-height: auto;
@@ -517,17 +490,7 @@ function LandingPage() {
 
       <div className="card-stack">
         <section className="sticky-card sticky-card-1 hero-section">
-          <video
-            className="hero-video"
-            autoPlay
-            loop
-            muted
-            playsInline
-            preload="auto"
-          >
-            <source src={heroVideoAsset.url} type="video/mp4" />
-          </video>
-          <div className="hero-overlay" aria-hidden="true" />
+
 
           <div className="hero-content">
             <p
