@@ -78,8 +78,6 @@ const STEPS = [
 
 function LandingPage() {
   const mono: CSSProperties = { fontFamily: "var(--font-accent)" };
-    setDiagramSrc((current) => (current === HOW_IMAGE_PRIMARY ? diagramAsset.url : current));
-  };
 
   return (
     <div className="landing-page" style={{ ...body, color: "var(--ink-primary)" }}>
