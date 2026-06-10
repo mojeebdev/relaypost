@@ -7,7 +7,7 @@ import { generateVersions, listPosts, getPost, regeneratePlatform } from "@/lib/
 import { supabase } from "@/integrations/supabase/client";
 import { generateLinkedInPdf } from "@/lib/linkedin-pdf";
 import { track } from "@/lib/analytics";
-import { PendoStatusButton } from "@/components/PendoStatusButton";
+
 
 const LOADING_STAGES = ["ANALYZING POST...", "REFORMATTING...", "READY TO APPROVE"] as const;
 
