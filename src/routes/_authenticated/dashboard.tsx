@@ -3,7 +3,7 @@ import { useEffect, useState, type CSSProperties, type FormEvent } from "react";
 import { useServerFn } from "@tanstack/react-start";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
-import { generateVersions, listPosts, getPost } from "@/lib/relay.functions";
+import { generateVersions, listPosts, getPost, regeneratePlatform } from "@/lib/relay.functions";
 import { supabase } from "@/integrations/supabase/client";
 import { generateLinkedInPdf } from "@/lib/linkedin-pdf";
 import { track } from "@/lib/analytics";
@@ -134,10 +134,12 @@ function DashboardPage() {
   const generate = useServerFn(generateVersions);
   const listFn = useServerFn(listPosts);
   const getFn = useServerFn(getPost);
+  const regenerateFn = useServerFn(regeneratePlatform);
 
   const [xPost, setXPost] = useState("");
   const [activePost, setActivePost] = useState<Post | null>(null);
   const [stageIdx, setStageIdx] = useState(0);
+  const [regeneratingPlatform, setRegeneratingPlatform] = useState<Platform | null>(null);
 
   const historyQuery = useQuery({
     queryKey: ["posts"],
@@ -203,6 +205,22 @@ function DashboardPage() {
     if (status === "approved") track({ name: "platform_approved", platform, post_id: activePost.id, original_post_length: activePost.original_x_post?.length });
     if (status === "skipped") track({ name: "platform_skipped", platform, post_id: activePost.id });
   };
+
+  const regenerate = async (platform: Platform) => {
+    if (!activePost || regeneratingPlatform) return;
+    setRegeneratingPlatform(platform);
+    try {
+      const res = await regenerateFn({ data: { id: activePost.id, platform } });
+      setActivePost(res.post as Post);
+      queryClient.invalidateQueries({ queryKey: ["posts"] });
+      toast.success(`${platform} version regenerated.`);
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : "Regeneration failed");
+    } finally {
+      setRegeneratingPlatform(null);
+    }
+  };
+
 
   const publishAllApproved = async () => {
     if (!activePost) return;
@@ -493,8 +511,8 @@ function DashboardPage() {
 
                     <footer className="flex gap-2">
                       <button
-                        onClick={() => updateStatus(p.key, "skipped")}
-                        disabled={status === "published"}
+                        onClick={() => regenerate(p.key)}
+                        disabled={status === "published" || regeneratingPlatform !== null}
                         style={{
                           flex: 1,
                           background: "transparent",
@@ -506,11 +524,11 @@ function DashboardPage() {
                           textTransform: "uppercase",
                           padding: "10px",
                           borderRadius: 6,
-                          cursor: status === "published" ? "not-allowed" : "pointer",
-                          opacity: status === "published" ? 0.4 : 1,
+                          cursor: status === "published" || regeneratingPlatform !== null ? "not-allowed" : "pointer",
+                          opacity: status === "published" || regeneratingPlatform !== null ? 0.4 : 1,
                         }}
                       >
-                        SKIP
+                        {regeneratingPlatform === p.key ? "REGENERATING..." : "REGENERATE"}
                       </button>
                       <button
                         onClick={() => updateStatus(p.key, "approved")}
