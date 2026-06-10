@@ -206,6 +206,22 @@ function DashboardPage() {
     if (status === "skipped") track({ name: "platform_skipped", platform, post_id: activePost.id });
   };
 
+  const regenerate = async (platform: Platform) => {
+    if (!activePost || regeneratingPlatform) return;
+    setRegeneratingPlatform(platform);
+    try {
+      const res = await regenerateFn({ data: { id: activePost.id, platform } });
+      setActivePost(res.post as Post);
+      queryClient.invalidateQueries({ queryKey: ["posts"] });
+      toast.success(`${platform} version regenerated.`);
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : "Regeneration failed");
+    } finally {
+      setRegeneratingPlatform(null);
+    }
+  };
+
+
   const publishAllApproved = async () => {
     if (!activePost) return;
     const patch: Record<string, unknown> = { published_at: new Date().toISOString() };
