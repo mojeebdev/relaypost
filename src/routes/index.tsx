@@ -123,140 +123,176 @@ function LandingPage() {
 
 function Hero() {
   return (
-    <section
-      style={{
-        ...GRID_BG,
-        minHeight: "100vh",
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "center",
-        justifyContent: "center",
-        textAlign: "center",
-        padding: "120px 24px 80px",
-        gap: 24,
-        position: "relative",
-        zIndex: 1,
-      }}
-    >
-      <span style={{ ...PILL_ACCENT_SOFT, position: "relative", zIndex: 1 }}>X-FIRST CONTENT DISTRIBUTION</span>
-
-      <h1
+    <div style={{ position: "relative", overflow: "hidden", minHeight: "100vh" }}>
+      <video
+        autoPlay
+        loop
+        muted
+        playsInline
         style={{
-          fontFamily: "Array, sans-serif",
-          fontSize: "clamp(80px, 12vw, 140px)",
-          fontWeight: 500,
-          color: "#F0F0F8",
-          letterSpacing: "0.05em",
-          lineHeight: 0.88,
-          margin: 0,
-          position: "relative",
-          zIndex: 1,
+          position: "absolute",
+          top: 0,
+          left: 0,
+          width: "100%",
+          height: "100%",
+          objectFit: "cover",
+          objectPosition: "right center",
+          zIndex: 0,
         }}
       >
-        RELAY
-      </h1>
-
-      <p
+        <source src="/videos/relay-hero.mp4" type="video/mp4" />
+      </video>
+      <div
         style={{
-          fontFamily: "IBM Plex Sans, sans-serif",
-          fontWeight: 300,
-          fontSize: 16,
-          color: "rgba(240,240,248,0.7)",
-          lineHeight: 1.7,
-          maxWidth: 400,
-          margin: 0,
-          position: "relative",
+          position: "absolute",
+          top: 0,
+          left: 0,
+          width: "100%",
+          height: "100%",
+          background:
+            "linear-gradient(to right, rgba(5,5,8,1) 0%, rgba(5,5,8,0.95) 35%, rgba(5,5,8,0.4) 65%, rgba(5,5,8,0) 100%)",
           zIndex: 1,
         }}
-      >
-        Write once on X. Distribute everywhere.
-        <br />X stays the source of truth.
-      </p>
+      />
+      <div style={{ position: "relative", zIndex: 2 }}>
+        <section
+          style={{
+            ...GRID_BG,
+            backgroundColor: "transparent",
+            minHeight: "100vh",
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            justifyContent: "center",
+            textAlign: "center",
+            padding: "120px 24px 80px",
+            gap: 24,
+            position: "relative",
+            zIndex: 1,
+          }}
+        >
+          <span style={{ ...PILL_ACCENT_SOFT, position: "relative", zIndex: 1 }}>X-FIRST CONTENT DISTRIBUTION</span>
 
-      <span
-        style={{
-          background: "rgba(0,255,157,0.06)",
-          border: "1px solid rgba(0,255,157,0.2)",
-          color: "#00FF9D",
-          fontFamily: "IBM Plex Mono, monospace",
-          fontSize: 10,
-          letterSpacing: "0.18em",
-          textTransform: "uppercase",
-          padding: "8px 20px",
-          borderRadius: 999,
-          display: "inline-block",
-          position: "relative",
-          zIndex: 1,
-        }}
-      >
-        THREE PLATFORMS. ONE TRANSMISSION.
-      </span>
-
-      <div style={{ display: "flex", gap: 8, justifyContent: "center", flexWrap: "wrap", position: "relative", zIndex: 1 }}>
-        {PLATFORMS.map((p) => (
-          <span
-            key={p.label}
+          <h1
             style={{
-              background: "rgba(0,255,157,0.06)",
-              border: "0.5px solid rgba(0,255,157,0.2)",
-              color: "#00FF9D",
-              fontFamily: "IBM Plex Mono, monospace",
-              fontSize: 11,
-              padding: "6px 14px",
-              borderRadius: 4,
-              display: "inline-flex",
-              alignItems: "center",
-              gap: 8,
+              fontFamily: "Array, sans-serif",
+              fontSize: "clamp(80px, 12vw, 140px)",
+              fontWeight: 500,
+              color: "#F0F0F8",
+              letterSpacing: "0.05em",
+              lineHeight: 0.88,
+              margin: 0,
+              position: "relative",
+              zIndex: 1,
             }}
           >
-            <span style={{ fontWeight: 700, fontSize: 12 }}>{p.icon}</span>
-            {p.label}
-          </span>
-        ))}
-      </div>
+            RELAY
+          </h1>
 
-      <div style={{ display: "flex", gap: 12, justifyContent: "center", flexWrap: "wrap", position: "relative", zIndex: 1 }}>
-        <Link
-          to="/login"
-          style={{
-            background: "#00FF9D",
-            color: "#000000",
-            fontFamily: "IBM Plex Mono, monospace",
-            fontSize: 11,
-            fontWeight: 600,
-            letterSpacing: "0.1em",
-            textTransform: "uppercase",
-            padding: "13px 28px",
-            borderRadius: 6,
-            border: "none",
-            cursor: "pointer",
-            textDecoration: "none",
-          }}
-        >
-          START DISTRIBUTING →
-        </Link>
-        <a
-          href="#how"
-          style={{
-            background: "transparent",
-            border: "0.5px solid rgba(240,240,248,0.12)",
-            color: "#4A4A5A",
-            fontFamily: "IBM Plex Mono, monospace",
-            fontSize: 11,
-            letterSpacing: "0.1em",
-            textTransform: "uppercase",
-            padding: "13px 28px",
-            borderRadius: 6,
-            cursor: "pointer",
-            textDecoration: "none",
-          }}
-        >
-          SEE HOW IT WORKS ↓
-        </a>
+          <p
+            style={{
+              fontFamily: "IBM Plex Sans, sans-serif",
+              fontWeight: 300,
+              fontSize: 16,
+              color: "rgba(240,240,248,0.7)",
+              lineHeight: 1.7,
+              maxWidth: 400,
+              margin: 0,
+              position: "relative",
+              zIndex: 1,
+            }}
+          >
+            Write once on X. Distribute everywhere.
+            <br />X stays the source of truth.
+          </p>
+
+          <span
+            style={{
+              background: "rgba(0,255,157,0.06)",
+              border: "1px solid rgba(0,255,157,0.2)",
+              color: "#00FF9D",
+              fontFamily: "IBM Plex Mono, monospace",
+              fontSize: 10,
+              letterSpacing: "0.18em",
+              textTransform: "uppercase",
+              padding: "8px 20px",
+              borderRadius: 999,
+              display: "inline-block",
+              position: "relative",
+              zIndex: 1,
+            }}
+          >
+            THREE PLATFORMS. ONE TRANSMISSION.
+          </span>
+
+          <div style={{ display: "flex", gap: 8, justifyContent: "center", flexWrap: "wrap", position: "relative", zIndex: 1 }}>
+            {PLATFORMS.map((p) => (
+              <span
+                key={p.label}
+                style={{
+                  background: "rgba(0,255,157,0.06)",
+                  border: "0.5px solid rgba(0,255,157,0.2)",
+                  color: "#00FF9D",
+                  fontFamily: "IBM Plex Mono, monospace",
+                  fontSize: 11,
+                  padding: "6px 14px",
+                  borderRadius: 4,
+                  display: "inline-flex",
+                  alignItems: "center",
+                  gap: 8,
+                }}
+              >
+                <span style={{ fontWeight: 700, fontSize: 12 }}>{p.icon}</span>
+                {p.label}
+              </span>
+            ))}
+          </div>
+
+          <div style={{ display: "flex", gap: 12, justifyContent: "center", flexWrap: "wrap", position: "relative", zIndex: 1 }}>
+            <Link
+              to="/login"
+              style={{
+                background: "#00FF9D",
+                color: "#000000",
+                fontFamily: "IBM Plex Mono, monospace",
+                fontSize: 11,
+                fontWeight: 600,
+                letterSpacing: "0.1em",
+                textTransform: "uppercase",
+                padding: "13px 28px",
+                borderRadius: 6,
+                border: "none",
+                cursor: "pointer",
+                textDecoration: "none",
+              }}
+            >
+              START DISTRIBUTING →
+            </Link>
+            <a
+              href="#how"
+              style={{
+                background: "transparent",
+                border: "0.5px solid rgba(240,240,248,0.12)",
+                color: "#4A4A5A",
+                fontFamily: "IBM Plex Mono, monospace",
+                fontSize: 11,
+                letterSpacing: "0.1em",
+                textTransform: "uppercase",
+                padding: "13px 28px",
+                borderRadius: 6,
+                cursor: "pointer",
+                textDecoration: "none",
+              }}
+            >
+              SEE HOW IT WORKS ↓
+            </a>
+          </div>
+        </section>
       </div>
-    </section>
+    </div>
   );
 }
+
 
 function HowItWorks() {
   return (
