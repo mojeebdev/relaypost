@@ -442,16 +442,6 @@ function LandingPage() {
           .hero-headline {
             font-size: clamp(64px, 16vw, 96px);
           }
-          .hero-video {
-            object-position: center center;
-          }
-          .hero-overlay {
-            background: linear-gradient(
-              to right,
-              rgba(5, 5, 8, 0.97) 0%,
-              rgba(5, 5, 8, 0.85) 100%
-            );
-          }
           .how-inner {
             padding: 80px 24px;
             min-height: auto;
