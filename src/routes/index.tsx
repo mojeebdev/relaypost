@@ -501,18 +501,7 @@ function LandingPage() {
 
       <div className="card-stack">
         <section className="sticky-card sticky-card-1 hero-section">
-          <video
-            className="hero-video"
-            autoPlay
-            loop
-            muted
-            playsInline
-            src={heroSrc}
-            onError={handleHeroError}
-          >
-            <source src={heroSrc} type="video/mp4" />
-          </video>
-          <div className="hero-overlay" />
+
           <div className="hero-content">
             <p
               style={{
