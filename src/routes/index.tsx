@@ -110,10 +110,10 @@ function LandingPage() {
         .relay-signin { font-family: var(--font-accent); font-size: 11px; color: var(--ink-tertiary); letter-spacing: 0.08em; text-decoration: none; transition: color .15s; }
         .relay-signin:hover { color: var(--ink-primary); }
 
-        .hero-grid { display: grid; grid-template-columns: 1fr 52%; align-items: center; max-width: 1280px; margin: 0 auto; padding: 0 clamp(24px, 6vw, 80px); min-height: 100vh; padding-top: 64px; gap: 48px; }
-        .hero-video-wrap { width: 100%; height: 100%; min-height: 520px; border-radius: 16px 0 0 16px; overflow: hidden; position: relative; }
-        .hero-video-wrap video { width: 100%; height: 100%; object-fit: cover; display: block; }
-        .hero-video-overlay { position: absolute; left: 0; top: 0; width: 80px; height: 100%; background: linear-gradient(90deg, var(--void-01), transparent); pointer-events: none; }
+        .hero-grid { display: grid; grid-template-columns: 1fr 52%; align-items: center; max-width: 1280px; margin: 0 auto; padding: 0 clamp(24px, 6vw, 80px); min-height: 100vh; padding-top: 64px; gap: 48px; position: relative; z-index: 1; }
+        .hero-left { position: relative; z-index: 2; display: flex; flex-direction: column; gap: 20px; }
+        .hero-video-wrap { width: 100%; height: 100%; min-height: 520px; border-radius: 12px; border: 0.5px solid var(--void-05); overflow: hidden; position: relative; z-index: 1; }
+        .hero-video-wrap video { width: 100%; height: 100%; object-fit: cover; object-position: right center; display: block; background: var(--void-01); }
 
         .btn-primary-cta { background: var(--accent); color: #000; font-family: var(--font-display); font-weight: 500; font-size: 12px; letter-spacing: 0.1em; text-transform: uppercase; padding: 13px 26px; border-radius: 6px; border: none; cursor: pointer; text-decoration: none; display: inline-block; transition: opacity .15s, transform .15s; }
         .btn-primary-cta:hover { opacity: .88; transform: translateY(-1px); }
