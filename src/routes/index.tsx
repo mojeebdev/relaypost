@@ -213,7 +213,7 @@ function Hero() {
         ))}
       </div>
 
-      <div style={{ display: "flex", gap: 12, justifyContent: "center", flexWrap: "wrap" }}>
+      <div style={{ display: "flex", gap: 12, justifyContent: "center", flexWrap: "wrap", position: "relative", zIndex: 1 }}>
         <Link
           to="/login"
           style={{
