@@ -7,6 +7,7 @@ import { generateVersions, listPosts, getPost, regeneratePlatform } from "@/lib/
 import { supabase } from "@/integrations/supabase/client";
 import { generateLinkedInPdf } from "@/lib/linkedin-pdf";
 import { track } from "@/lib/analytics";
+import { PendoStatusButton } from "@/components/PendoStatusButton";
 
 const LOADING_STAGES = ["ANALYZING POST...", "REFORMATTING...", "READY TO APPROVE"] as const;
 
@@ -278,12 +279,14 @@ function DashboardPage() {
       `}</style>
 
       <section className="max-w-5xl mx-auto px-6 pt-12">
+        <PendoStatusButton />
         <div className="mb-8">
           <p style={labelStyle}>// NEW TRANSMISSION</p>
           <h1 className="text-4xl mt-3" style={{ fontFamily: "var(--font-display)", fontWeight: 500 }}>
             One post on X. Three platforms primed.
           </h1>
         </div>
+
 
         <form
           onSubmit={handleSubmit}
