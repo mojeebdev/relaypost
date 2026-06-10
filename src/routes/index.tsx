@@ -1,6 +1,7 @@
 import { createFileRoute, Link, redirect } from "@tanstack/react-router";
 import { useState, type CSSProperties } from "react";
 import { supabase } from "@/integrations/supabase/client";
+import relayHeroVideo from "@/assets/relay-hero.mp4.asset.json";
 
 export const Route = createFileRoute("/")({
   beforeLoad: async () => {
@@ -140,7 +141,7 @@ function Hero() {
           zIndex: 0,
         }}
       >
-        <source src="/videos/relay-hero.mp4" type="video/mp4" />
+        <source src={relayHeroVideo.url} type="video/mp4" />
       </video>
       <div
         style={{
