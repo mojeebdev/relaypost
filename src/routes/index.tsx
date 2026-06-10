@@ -169,7 +169,7 @@ function LandingPage() {
           width: 100%;
           height: 100%;
           object-fit: cover;
-          object-position: center center;
+          object-position: center right;
           z-index: 0;
         }
         .hero-overlay {
@@ -177,9 +177,11 @@ function LandingPage() {
           inset: 0;
           background: linear-gradient(
             to right,
-            rgba(5, 5, 8, 0.92) 0%,
-            rgba(5, 5, 8, 0.75) 45%,
-            rgba(5, 5, 8, 0.2) 100%
+            rgba(5, 5, 8, 1.0) 0%,
+            rgba(5, 5, 8, 0.98) 25%,
+            rgba(5, 5, 8, 0.80) 50%,
+            rgba(5, 5, 8, 0.10) 75%,
+            rgba(5, 5, 8, 0.0) 100%
           );
           z-index: 1;
           pointer-events: none;
@@ -188,8 +190,8 @@ function LandingPage() {
           position: relative;
           z-index: 2;
           padding-left: clamp(40px, 8vw, 120px);
-          padding-top: 30vh;
-          max-width: 600px;
+          padding-top: 28vh;
+          max-width: 560px;
           display: flex;
           flex-direction: column;
           gap: 20px;
