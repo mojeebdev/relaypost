@@ -161,31 +161,14 @@ function LandingPage() {
           width: 100%;
           height: 100%;
           min-height: 100vh;
-          background: #050508;
+          background-color: #050508;
+          background-image:
+            linear-gradient(#1E1E28 1px, transparent 1px),
+            linear-gradient(90deg, #1E1E28 1px, transparent 1px);
+          background-size: 48px 48px;
         }
-        .hero-video {
-          position: absolute;
-          inset: 0;
-          width: 100%;
-          height: 100%;
-          object-fit: cover;
-          object-position: center right;
-          z-index: 0;
-        }
-        .hero-overlay {
-          position: absolute;
-          inset: 0;
-          background: linear-gradient(
-            to right,
-            rgba(5, 5, 8, 1.0) 0%,
-            rgba(5, 5, 8, 0.98) 25%,
-            rgba(5, 5, 8, 0.80) 50%,
-            rgba(5, 5, 8, 0.10) 75%,
-            rgba(5, 5, 8, 0.0) 100%
-          );
-          z-index: 1;
-          pointer-events: none;
-        }
+        ::-webkit-scrollbar { display: none; }
+        html, body { scrollbar-width: none; -ms-overflow-style: none; }
         .hero-content {
           position: relative;
           z-index: 2;
