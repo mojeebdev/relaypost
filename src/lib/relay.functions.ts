@@ -137,3 +137,38 @@ export const getPost = createServerFn({ method: "GET" })
     if (error) throw new Error(error.message);
     return { post: row };
   });
+
+export const regeneratePlatform = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((input) =>
+    z.object({
+      id: z.string().uuid(),
+      platform: z.enum(["linkedin", "medium", "facebook"]),
+    }).parse(input)
+  )
+  .handler(async ({ data, context }) => {
+    const { supabase } = context;
+    const { data: existing, error: fetchErr } = await supabase
+      .from("posts")
+      .select("original_x_post")
+      .eq("id", data.id)
+      .single();
+    if (fetchErr) throw new Error(fetchErr.message);
+
+    const fresh = await callLovableAI(PROMPTS[data.platform](existing.original_x_post));
+    const versioned = withSignature(fresh, data.platform);
+
+    const patch = {
+      [`${data.platform}_version`]: versioned,
+      [`${data.platform}_status`]: "pending" as const,
+    };
+    const { data: row, error } = await supabase
+      .from("posts")
+      .update(patch as never)
+      .eq("id", data.id)
+      .select()
+      .single();
+    if (error) throw new Error(error.message);
+    return { post: row };
+  });
+
