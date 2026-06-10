@@ -126,106 +126,24 @@ function LandingPage() {
         }
         .landing-signin:hover { color: var(--ink-primary); }
 
-        .card-stack {
-          position: relative;
-          height: 400vh;
-        }
-        .sticky-card {
-          position: sticky;
-          top: 0;
-          width: 100%;
-          height: 100vh;
-        }
-        .sticky-card-1 {
-          z-index: 1;
-          overflow: hidden;
-        }
-        .sticky-card-2 {
-          z-index: 2;
-          overflow-x: hidden;
-          overflow-y: auto;
-        }
-        .sticky-card-3 {
-          z-index: 3;
-          overflow: hidden;
-        }
-        .sticky-card-4 {
-          z-index: 4;
-          overflow-x: hidden;
-          overflow-y: auto;
-        }
-
-        .hero-section {
-          position: relative;
-          width: 100%;
-          height: 100%;
-          min-height: 100vh;
-          background: #050508;
-          padding-top: 140px;
-          padding-bottom: 80px;
-          box-sizing: border-box;
-        }
-        .hero-content {
-          position: relative;
-          z-index: 2;
-          padding-left: clamp(40px, 8vw, 120px);
-          max-width: 600px;
-          display: flex;
-          flex-direction: column;
-          gap: 20px;
-        }
-
-        .hero-headline {
-          font-family: var(--font-display);
-          font-size: clamp(80px, 13vw, 160px);
-          font-weight: 500;
-          color: #F0F0F8;
-          letter-spacing: 0.05em;
-          line-height: 0.85;
-          margin: 0;
-        }
-        .hero-sub {
-          font-family: var(--font-body);
-          font-weight: 300;
-          font-size: 17px;
-          color: rgba(240, 240, 248, 0.7);
-          max-width: 380px;
-          line-height: 1.7;
-          margin: 0;
-        }
-        .platform-badges {
-          display: flex;
-          flex-wrap: wrap;
-          gap: 8px;
-        }
         .platform-badge {
           background: rgba(0, 255, 157, 0.08);
           border: 0.5px solid rgba(0, 255, 157, 0.3);
           color: #00FF9D;
           font-family: var(--font-accent);
           font-size: 11px;
-          padding: 6px 12px;
+          padding: 6px 14px;
           border-radius: 4px;
           display: inline-flex;
           align-items: center;
           gap: 6px;
         }
-        .platform-badge svg {
-          display: inline-flex;
-          vertical-align: middle;
-        }
 
-        .cta-row {
-          display: flex;
-          flex-wrap: wrap;
-          gap: 12px;
-          margin-top: 8px;
-        }
         .btn-primary {
           background: #00FF9D;
           color: #000;
           font-family: var(--font-accent);
-          font-weight: 500;
+          font-weight: 600;
           font-size: 11px;
           text-transform: uppercase;
           letter-spacing: 0.1em;
@@ -257,33 +175,6 @@ function LandingPage() {
           border-color: rgba(240, 240, 248, 0.3);
           color: rgba(240, 240, 248, 0.8);
         }
-        .scroll-hint {
-          position: absolute;
-          bottom: 32px;
-          left: 50%;
-          transform: translateX(-50%);
-          z-index: 2;
-          display: flex;
-          flex-direction: column;
-          align-items: center;
-          gap: 8px;
-          pointer-events: none;
-        }
-        .scroll-hint-text {
-          font-family: var(--font-accent);
-          font-size: 10px;
-          color: #4A4A5A;
-          letter-spacing: 0.2em;
-          text-transform: uppercase;
-          margin: 0;
-        }
-        .scroll-hint-arrow {
-          width: 10px;
-          height: 10px;
-          border-right: 1.5px solid #4A4A5A;
-          border-bottom: 1.5px solid #4A4A5A;
-          animation: relay-bounce 2s ease-in-out infinite;
-        }
 
         .how-section {
           background-color: #050508;
@@ -300,15 +191,7 @@ function LandingPage() {
           flex-direction: column;
           align-items: center;
           gap: 48px;
-          min-height: 100vh;
           box-sizing: border-box;
-        }
-        .how-diagram {
-          width: 100%;
-          max-width: 820px;
-          border-radius: 12px;
-          border: 0.5px solid #2C2C3A;
-          display: block;
         }
         .steps-grid {
           display: grid;
@@ -321,15 +204,14 @@ function LandingPage() {
         .origin-section {
           background: #0C0C12;
           border-top: 1px solid #2C2C3A;
+          border-bottom: 1px solid #2C2C3A;
         }
         .origin-inner {
           max-width: 800px;
           margin: 0 auto;
-          padding: clamp(80px, 10vh, 120px) clamp(24px, 6vw, 80px);
-          min-height: 100vh;
+          padding: 80px clamp(24px, 6vw, 80px);
           display: flex;
           flex-direction: column;
-          justify-content: center;
           box-sizing: border-box;
         }
         .origin-headline {
@@ -356,14 +238,16 @@ function LandingPage() {
         }
 
         .faq-section {
-          background: #050508;
-          border-top: 1px solid #2C2C3A;
+          background-color: #050508;
+          background-image:
+            linear-gradient(#1E1E28 1px, transparent 1px),
+            linear-gradient(90deg, #1E1E28 1px, transparent 1px);
+          background-size: 48px 48px;
         }
         .faq-inner {
           max-width: 800px;
           margin: 0 auto;
           padding: 80px clamp(24px, 6vw, 80px);
-          min-height: 100vh;
           box-sizing: border-box;
         }
         .faq-item {
@@ -401,8 +285,6 @@ function LandingPage() {
         }
 
         .landing-footer {
-          position: relative;
-          z-index: 5;
           border-top: 1px solid #2C2C3A;
           background: #0C0C12;
           padding: 40px clamp(24px, 6vw, 80px);
@@ -429,37 +311,7 @@ function LandingPage() {
         .footer-link:hover { color: #00FF9D; }
 
         @media (max-width: 767px) {
-          .card-stack { height: auto; }
-          .sticky-card {
-            position: relative;
-            height: auto;
-            overflow: visible;
-          }
-          .sticky-card-1 { min-height: 100vh; }
-          .hero-content {
-            padding: 120px 24px 80px;
-            max-width: none;
-          }
-          .hero-headline {
-            font-size: clamp(64px, 16vw, 96px);
-          }
-          .how-inner {
-            padding: 80px 24px;
-            min-height: auto;
-          }
-          .steps-grid {
-            grid-template-columns: 1fr;
-          }
-          .origin-inner {
-            padding: 80px 24px;
-            min-height: auto;
-          }
-          .faq-inner {
-            padding: 80px 24px;
-            max-width: none;
-            width: 100%;
-            min-height: auto;
-          }
+          .steps-grid { grid-template-columns: 1fr; }
           .footer-row {
             flex-direction: column;
             align-items: flex-start;
