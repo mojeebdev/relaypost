@@ -131,6 +131,8 @@ function Hero() {
         loop
         muted
         playsInline
+        preload="auto"
+        poster={relayHeroPoster.url}
         style={{
           position: "absolute",
           top: 0,
