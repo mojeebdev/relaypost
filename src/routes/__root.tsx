@@ -109,20 +109,28 @@ function RootComponent() {
   const { queryClient } = Route.useRouteContext();
   const router = useRouter();
 
-  useEffect(() => {
-    pendo.initialize({ visitor: { id: '' } });
-  }, []);
+  const initialized = useRef(false);
 
   useEffect(() => {
+    if (!initialized.current && typeof window !== "undefined" && window.pendo) {
+      const anonId = "anon-" + crypto.randomUUID();
+      window.pendo.initialize({
+        visitor: { id: anonId },
+        account: { id: "relay-app" },
+      });
+      initialized.current = true;
+    }
+
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
       router.invalidate();
       queryClient.invalidateQueries();
-      if (session?.user) {
-        pendo.identify({
+      if (session?.user && window.pendo) {
+        window.pendo.identify({
           visitor: {
             id: session.user.id,
-            email: session.user.email || '',
+            email: session.user.email || "",
           },
+          account: { id: session.user.id },
         });
       }
     });
